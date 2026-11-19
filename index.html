@@ -213,12 +213,24 @@ table.form td.k{color:var(--gold);font-weight:700;background:rgba(255,215,0,.06)
 
 @media (max-width:820px),(max-height:520px){
   #tools{display:none}.navz{display:none}#pageno{display:none}
-  #mnav{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:60;height:52px;align-items:center;justify-content:space-between;
-    padding:0 10px calc(env(safe-area-inset-bottom)) 10px;background:rgba(8,6,4,.9);border-top:1px solid var(--line)}
-  #mnav button{background:none;border:1px solid var(--line);color:var(--gold);border-radius:22px;font-size:16px;padding:6px 16px}
-  #mnav span{font-family:var(--display);color:var(--champ);font-size:16px}
 }
-@media (max-height:520px) and (orientation:landscape){#mnav{opacity:.0;transition:.3s}#mnav:hover,#mnav:focus-within{opacity:1}}
+body[data-mnav=bar] #tools,body[data-mnav=barl] #tools,body[data-mnav=side] #tools,body[data-mnav=bar] #pageno,body[data-mnav=barl] #pageno,body[data-mnav=side] #pageno,body[data-mnav=bar] .navz,body[data-mnav=barl] .navz,body[data-mnav=side] .navz{display:none}
+body[data-mnav=bar] #mnav,body[data-mnav=barl] #mnav{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:60;height:56px;align-items:center;justify-content:space-between;gap:8px;
+    padding:0 calc(10px + env(safe-area-inset-right)) 0 calc(10px + env(safe-area-inset-left));background:rgba(8,6,4,.92);border-top:1px solid var(--line)}
+body[data-mnav=bar] #mnav{height:calc(56px + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom)}
+body[data-mnav=barl] #mnav{height:calc(40px + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom)}
+body[data-mnav] #mnav button{background:rgba(10,8,5,.75);border:1px solid var(--line);color:var(--gold);border-radius:22px;font-size:16px;padding:6px 16px;font-family:var(--serif);-webkit-tap-highlight-color:transparent}
+body[data-mnav=barl] #mnav button{padding:3px 14px;font-size:15px}
+body[data-mnav] #mnav span{font-family:var(--display);color:var(--champ);font-size:16px}
+body[data-mnav=side] #mnav{display:block;position:fixed;inset:0;z-index:60;pointer-events:none}
+body[data-mnav=side] #mnav>*{pointer-events:auto;position:fixed}
+body[data-mnav=side] #mprev,body[data-mnav=side] #mnext{top:50%;transform:translateY(-50%);width:56px;padding:18px 0 !important;writing-mode:vertical-rl;letter-spacing:.2em;font-size:16px}
+body[data-mnav=side] #mprev{left:calc(8px + env(safe-area-inset-left))}
+body[data-mnav=side] #mnext{right:calc(8px + env(safe-area-inset-right))}
+body[data-mnav=side] #mpage{left:calc(8px + env(safe-area-inset-left));bottom:calc(10px + env(safe-area-inset-bottom));width:56px;text-align:center;font-size:13px}
+body[data-mnav=side] #mov{right:calc(8px + env(safe-area-inset-right));bottom:calc(8px + env(safe-area-inset-bottom));width:56px;padding:4px 0 !important}
+@media (max-width:820px),(max-height:520px){
+}
 @media print{#bokeh,#fizz,#tools,#bar,#pageno,.navz{display:none}}
 /* 內容在標題下方的剩餘空間垂直置中 */
 .slide:not(.nopad){display:flex;flex-direction:column}
@@ -1616,18 +1628,32 @@ const N=slides.length;
 let cur=0;
 window.DECK={slides,N,get cur(){return cur},go};
 
+/* 讀取瀏海、手勢條的安全邊距 */
+const probe=document.createElement('div');
+probe.style.cssText='position:fixed;left:0;top:0;visibility:hidden;pointer-events:none;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)';
+document.body.appendChild(probe);
+function safe(){const c=getComputedStyle(probe);return{l:parseFloat(c.paddingLeft)||0,r:parseFloat(c.paddingRight)||0,b:parseFloat(c.paddingBottom)||0}}
 /* 舞台縮放 */
 function fit(){
   const vw=innerWidth, vh=innerHeight;
-  const mob=matchMedia('(max-width:820px),(max-height:520px)').matches;
-  const land=vh<520&&vw>vh;
-  const availH=mob&&!land?vh-52:vh;
-  const s=Math.min(vw/1600,availH/900);
-  const x=(vw-1600*s)/2, y=(availH-900*s)/2;
+  const mob=matchMedia('(max-width:820px),(max-height:520px)').matches||(matchMedia('(pointer:coarse)').matches&&!matchMedia('(pointer:fine)').matches);
+  const land=mob&&vw>vh;
+  // 手機翻頁列：直立放底部；橫放時兩側夠寬就放左右兩側（不壓縮投影片），不夠寬才放底部窄列
+  let mode='', availH=vh, availW=vw, x0=0;
+  const ins=safe();
+  if(mob){
+    const side=Math.max(ins.l,ins.r)+70;   // 側邊翻頁鈕需要的寬度（含瀏海）
+    if(land&&vw-(vh-ins.b)*16/9>=2*side){mode='side';availH=vh-ins.b}
+    else{mode=land?'barl':'bar';availH=vh-(land?40:56)-ins.b}
+  }
+  document.body.dataset.mnav=mode;
+  const s=Math.min(availW/1600,availH/900);
+  const x=x0+(availW-1600*s)/2, y=(availH-900*s)/2;
   stage.style.transform=`translate(${x-vw/2}px,${y-vh/2}px) scale(${s})`;
   stage.style.left=vw/2+'px';stage.style.top=vh/2+'px';
 }
-addEventListener('resize',fit);fit();
+addEventListener('resize',fit);addEventListener('orientationchange',()=>setTimeout(fit,300));
+if(window.visualViewport)visualViewport.addEventListener('resize',fit);fit();
 
 /* 翻頁 */
 function go(n,inst){
