@@ -1,0 +1,2159 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>商圈立地與物流策略</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Ccircle cx=%2232%22 cy=%2232%22 r=%2228%22 fill=%22%23FFD700%22/%3E%3C/svg%3E">
+<meta name="description" content="零售管理｜商圈調查、立地評估與物流策略（合併 CH05、CH07）香檳慶典風互動網頁簡報">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Noto+Serif+TC:wght@400;600;700;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>/* ===== Champagne Celebration 香檳慶典風 ===== */
+:root{
+  --bg:#0A0A0A; --bg2:#16110A; --bg3:#221A0E;
+  --champ:#F7E7CE;            /* 香檳金：主要內文 */
+  --champ2:rgba(247,231,206,.74);
+  --champ3:rgba(247,231,206,.46);
+  --gold:#FFD700;             /* 亮片金：核心強調 */
+  --gold2:#D4AF37;            /* 金屬金：線條 */
+  --gold3:#9C7A2B;
+  --rose:#F4B9A6;             /* 粉紅香檳：次強調 */
+  --white:#FFFFFF;
+  --ok:#B9F2A1; --bad:#FF9C8A;
+  --line:rgba(212,175,55,.42);
+  --card:linear-gradient(155deg,rgba(255,215,0,.10),rgba(255,236,190,.035) 45%,rgba(255,255,255,.02));
+  --serif:"Noto Serif TC","Playfair Display","PMingLiU",serif;
+  --display:"Playfair Display","Noto Serif TC",serif;
+  --script:"Great Vibes","Playfair Display",cursive;
+  --W:1600px; --H:900px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--bg);color:var(--champ);overflow:hidden;
+  font-family:var(--serif);-webkit-font-smoothing:antialiased;
+  touch-action:pan-y pinch-zoom;overscroll-behavior:none}
+button{font-family:inherit;cursor:pointer}
+
+/* ---------- 背景：午夜散景 ---------- */
+#bgfx{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+   radial-gradient(1200px 700px at 78% 12%,rgba(255,196,80,.16),transparent 60%),
+   radial-gradient(900px 600px at 10% 90%,rgba(244,185,166,.10),transparent 60%),
+   radial-gradient(1400px 900px at 50% 50%,#17110a 0%,#0b0907 55%,#060504 100%)}
+#bokeh{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+#bokeh i{position:absolute;border-radius:50%;
+  background:radial-gradient(circle at 40% 40%,rgba(255,240,200,.55),rgba(255,215,0,.22) 45%,rgba(255,215,0,0) 70%);
+  filter:blur(2px);animation:drift linear infinite;opacity:.55}
+@keyframes drift{0%{transform:translate(0,0) scale(1)}50%{transform:translate(30px,-40px) scale(1.08)}100%{transform:translate(0,0) scale(1)}}
+#fizz{position:fixed;inset:0;z-index:2;pointer-events:none}
+
+/* ---------- 舞台 ---------- */
+#viewport{position:fixed;inset:0;z-index:5}
+#stage{position:absolute;left:50%;top:50%;width:var(--W);height:var(--H);transform-origin:0 0}
+.slide{position:absolute;inset:0;padding:64px 88px 70px;opacity:0;visibility:hidden;
+  transition:opacity .6s ease,transform .6s ease,visibility 0s .6s;transform:translateY(14px)}
+.slide.on{opacity:1;visibility:visible;transform:none;transition:opacity .6s ease,transform .6s ease}
+.slide.nopad{padding:0}
+
+/* 標題區 */
+.hd{position:relative;margin-bottom:26px}
+.kicker{font-family:var(--display);font-size:18px;letter-spacing:.32em;text-transform:uppercase;color:var(--gold2)}
+.kicker b{color:var(--gold);font-weight:700}
+h1,h2{font-weight:700;letter-spacing:.06em;line-height:1.2}
+h2{font-size:52px;margin-top:6px}
+.gt{background:linear-gradient(100deg,#B8862B 0%,#FFD700 28%,#FFF6D2 48%,#FFD700 66%,#B8862B 100%);
+  background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:shimmer 7s ease-in-out infinite}
+@keyframes shimmer{0%,100%{background-position:0% 0}50%{background-position:100% 0}}
+.script{font-family:var(--script);font-size:46px;color:var(--rose);opacity:.9;line-height:1;
+  position:absolute;right:0;top:-6px;text-shadow:0 0 18px rgba(244,185,166,.35)}
+.hd::after{content:"";display:block;margin-top:16px;height:1px;width:100%;
+  background:linear-gradient(90deg,var(--gold2),rgba(212,175,55,.25) 55%,transparent)}
+.lead{font-size:30px;line-height:1.7;color:var(--champ);letter-spacing:.05em}
+.sub{font-size:26px;color:var(--champ2);line-height:1.65;letter-spacing:.04em}
+.small{font-size:21px;color:var(--champ3);letter-spacing:.03em;line-height:1.5}
+.src{position:absolute;left:88px;bottom:30px;font-size:15px;color:var(--champ3);letter-spacing:.02em}
+.hl{color:var(--gold);font-weight:700}
+.rz{color:var(--rose);font-weight:700}
+u.gl{text-decoration:none;background:linear-gradient(transparent 70%,rgba(255,215,0,.28) 70%)}
+.en{font-family:var(--display);font-style:italic;color:var(--champ2);font-size:.82em;letter-spacing:.02em}
+
+/* 版面工具 */
+.row{display:flex;gap:36px}
+.col{display:flex;flex-direction:column;gap:18px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+.c{text-align:center}.mid{align-items:center}.f1{flex:1}
+.mt{margin-top:22px}.mt2{margin-top:40px}
+
+/* 邀請函卡片 */
+.card{position:relative;background:var(--card);border:1px solid var(--line);border-radius:22px;
+  padding:24px 28px;box-shadow:0 0 0 1px rgba(255,215,0,.04) inset,0 18px 50px rgba(0,0,0,.45),0 0 40px rgba(255,200,90,.05)}
+.card::before{content:"";position:absolute;inset:6px;border-radius:17px;border:1px solid rgba(255,215,0,.10);pointer-events:none}
+.card h3{font-size:30px;color:var(--gold);letter-spacing:.06em;margin-bottom:10px}
+.card p,.card li{font-size:26px;line-height:1.6;color:var(--champ)}
+.card h3~.en,.card div>.en{display:block;font-size:19px;margin-top:4px}
+.card.glow{border-color:rgba(255,215,0,.75);box-shadow:0 0 30px rgba(255,215,0,.18),0 18px 50px rgba(0,0,0,.5)}
+
+/* 編號泡泡 */
+.bub{flex:none;width:58px;height:58px;border-radius:50%;display:grid;place-items:center;
+  font-family:var(--display);font-size:26px;font-weight:700;color:#2a1d05;
+  background:radial-gradient(circle at 35% 30%,#FFF8D6,#FFD700 45%,#B8862B 100%);
+  box-shadow:0 0 18px rgba(255,215,0,.45),inset 0 -4px 8px rgba(120,80,0,.35)}
+.bub.sm{width:42px;height:42px;font-size:19px}
+
+/* 項目清單（金色星芒） */
+ul.sp{list-style:none;display:flex;flex-direction:column;gap:14px}
+ul.sp li{position:relative;padding-left:40px;font-size:28px;line-height:1.55;letter-spacing:.05em}
+ul.sp li::before{content:"✦";position:absolute;left:4px;top:.05em;color:var(--gold);text-shadow:0 0 10px rgba(255,215,0,.8)}
+ul.sp.sm li{font-size:26px;padding-left:34px}
+ul.sp.big li{font-size:30px}ul.sp.big li small{font-size:24px}
+ul.sp.two{display:grid;grid-template-columns:1fr 1fr;column-gap:40px}
+ul.sp li small{display:block;font-size:20px;color:var(--champ2);letter-spacing:.03em}
+
+/* 清單卡（項目一格一格） */
+.tiles{display:grid;gap:18px}
+.tile{display:flex;gap:18px;align-items:center;padding:18px 22px;border-radius:18px;
+  background:var(--card);border:1px solid var(--line);font-size:27px;line-height:1.45;letter-spacing:.04em}
+.tile .bub{width:48px;height:48px;font-size:21px}
+
+/* 表格（框線越少越好） */
+table.tb{width:100%;border-collapse:collapse;font-size:24px;line-height:1.45}
+table.tb th{font-weight:700;color:var(--gold);text-align:left;padding:10px 14px;border-bottom:1.5px solid var(--gold2);letter-spacing:.06em;font-size:1em}
+table.tb td{padding:9px 14px;border-bottom:1px solid rgba(212,175,55,.2);color:var(--champ);vertical-align:middle}
+table.tb td:first-child{color:var(--gold);font-weight:700;white-space:nowrap}
+table.tb tr:hover td{background:rgba(255,215,0,.05)}
+table.tb.cmp td,table.tb.cmp th{text-align:center}
+table.tb.cmp td:first-child{text-align:left}
+.tcap{font-size:22px;color:var(--rose);letter-spacing:.12em;margin-bottom:10px;font-weight:700}
+table.form td{border:1px solid rgba(212,175,55,.32);color:var(--champ2);font-size:19px;padding:7px 10px;height:38px}
+table.form td.k{color:var(--gold);font-weight:700;background:rgba(255,215,0,.06);white-space:nowrap}
+
+/* 圖片 */
+.ph{border-radius:18px;overflow:hidden;border:1px solid var(--line);box-shadow:0 18px 40px rgba(0,0,0,.55),0 0 26px rgba(255,200,90,.08);background:#111}
+.ph img{display:block;width:100%;height:100%;object-fit:cover}
+.fig{background:#FBF5EA;border-radius:18px;padding:16px;border:2px solid var(--gold2);
+  box-shadow:0 0 0 6px rgba(212,175,55,.12),0 22px 50px rgba(0,0,0,.6),0 0 40px rgba(255,215,0,.12)}
+.fig img{display:block;width:100%;height:100%;object-fit:contain}
+.figcap{font-size:18px;color:var(--champ3);margin-top:10px;text-align:center;letter-spacing:.08em}
+.zoomable{cursor:zoom-in}
+
+/* 公式 */
+.fx{font-family:"Times New Roman",var(--serif);font-size:34px;color:var(--white);display:inline-flex;align-items:center;gap:12px}
+.frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle}
+.frac>span{padding:2px 10px}
+.frac>span:first-child{border-bottom:2px solid var(--gold)}
+.fx i{font-style:italic}
+.fx sub{font-size:.6em}.fx sup{font-size:.6em}
+.box-gold{border:1.5px solid var(--gold);border-radius:18px;padding:18px 26px;background:rgba(255,215,0,.07);box-shadow:0 0 30px rgba(255,215,0,.15)}
+
+/* 扉頁 */
+.cover-img{position:absolute;inset:0;background-size:cover;background-position:center}
+.cover-img::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(8,6,4,.94) 0%,rgba(8,6,4,.72) 42%,rgba(8,6,4,.15) 75%,rgba(8,6,4,.35) 100%)}
+.sec-in{position:absolute;left:110px;top:50%;transform:translateY(-50%);max-width:820px}
+.sec-no{font-family:var(--display);font-size:150px;line-height:1;font-weight:700;opacity:.95}
+.sec-title{font-size:66px;font-weight:900;letter-spacing:.08em;margin-top:6px}
+.sec-script{font-family:var(--script);font-size:64px;color:var(--rose);margin-top:4px}
+.sec-list{margin-top:26px;font-size:28px;color:var(--champ2);line-height:1.8;letter-spacing:.06em}
+.sec-list span{color:var(--gold);margin-right:10px}
+
+/* 互動標籤 */
+.badge{position:absolute;right:88px;top:40px;font-family:var(--display);font-size:16px;letter-spacing:.24em;
+  color:#2a1d05;background:linear-gradient(90deg,#FFD700,#FFF0B0,#FFD700);padding:6px 16px;border-radius:30px;
+  box-shadow:0 0 20px rgba(255,215,0,.45);z-index:3}
+.slide.ia .script{right:240px}
+
+/* 按鈕 */
+.btn{border:1px solid var(--gold2);background:rgba(255,215,0,.08);color:var(--gold);font-size:21px;
+  padding:9px 22px;border-radius:30px;letter-spacing:.08em;transition:.2s}
+.btn:hover{background:rgba(255,215,0,.2);box-shadow:0 0 18px rgba(255,215,0,.35)}
+.btn.solid{background:linear-gradient(90deg,#D4AF37,#FFD700,#F6E3A1);color:#241703;font-weight:700;border-color:transparent}
+.btn.ghost{color:var(--champ2);border-color:rgba(247,231,206,.3);background:transparent}
+.btn[hidden]{display:none}
+.chip{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:30px;
+  padding:8px 18px;font-size:23px;background:rgba(255,255,255,.03);color:var(--champ);transition:.18s;user-select:none}
+.chip:hover{border-color:var(--gold)}
+.chip.sel{background:rgba(255,215,0,.22);border-color:var(--gold);box-shadow:0 0 16px rgba(255,215,0,.35);color:var(--white)}
+.chip.ok{border-color:var(--ok);background:rgba(185,242,161,.14)}
+.chip.no{border-color:var(--bad);background:rgba(255,156,138,.14)}
+.chip .mk{font-weight:700}
+.chip.ok .mk{color:var(--ok)}.chip.no .mk{color:var(--bad)}
+
+/* ---------- 全域 UI ---------- */
+#bar{position:fixed;left:0;top:0;height:3px;z-index:50;width:0;
+  background:linear-gradient(90deg,#B8862B,#FFD700,#FFF6D2);box-shadow:0 0 12px rgba(255,215,0,.8);transition:width .5s}
+#pageno{position:fixed;right:22px;bottom:14px;z-index:50;font-family:var(--display);font-size:16px;color:var(--champ2);letter-spacing:.12em}
+#pageno b{color:var(--gold);font-size:20px}
+#tools{position:fixed;left:16px;bottom:12px;z-index:50;display:flex;gap:8px;opacity:.35;transition:opacity .3s}
+#tools:hover{opacity:1}
+#tools button{border:1px solid var(--line);background:rgba(10,8,5,.6);color:var(--champ2);border-radius:20px;font-size:14px;padding:5px 12px;letter-spacing:.06em}
+.navz{position:fixed;top:12%;bottom:12%;width:5vw;z-index:40;cursor:pointer;display:grid;place-items:center;opacity:0;transition:.3s;color:var(--gold);font-size:34px}
+.navz:hover{opacity:.7}
+#navL{left:0}#navR{right:0}
+#jump{position:fixed;left:50%;top:44%;transform:translate(-50%,-50%);z-index:80;font-family:var(--display);font-size:64px;color:var(--gold);
+  background:rgba(10,8,5,.85);border:1px solid var(--gold2);border-radius:20px;padding:10px 40px;display:none}
+#overview{position:fixed;inset:0;z-index:90;background:rgba(6,5,3,.94);display:none;overflow:auto;padding:40px 5vw}
+#overview.on{display:block}
+#overview h3{font-family:var(--script);font-size:56px;color:var(--gold);font-weight:400;margin-bottom:12px}
+#overview .sec{font-size:20px;color:var(--rose);margin:22px 0 8px;letter-spacing:.12em}
+#overview .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+#overview a{display:flex;gap:10px;align-items:baseline;padding:10px 14px;border:1px solid rgba(212,175,55,.25);border-radius:12px;color:var(--champ);text-decoration:none;font-size:17px;line-height:1.4}
+#overview a:hover,#overview a.cur{border-color:var(--gold);background:rgba(255,215,0,.08)}
+#overview a i{font-style:normal;font-family:var(--display);color:var(--gold);min-width:28px}
+#overview a.ia::after{content:"互動";margin-left:auto;font-size:12px;color:#241703;background:var(--gold);border-radius:10px;padding:1px 8px;flex:none}
+#lightbox{position:fixed;inset:0;z-index:95;background:rgba(5,4,2,.92);display:none;place-items:center;cursor:zoom-out}
+#lightbox.on{display:grid}
+#lightbox img{max-width:94vw;max-height:92vh;background:#FBF5EA;border-radius:12px;padding:10px;box-shadow:0 0 60px rgba(255,215,0,.25)}
+#help{position:fixed;inset:0;z-index:96;background:rgba(5,4,2,.9);display:none;place-items:center}
+#help.on{display:grid}
+#help .card{max-width:640px}
+#help td{font-size:19px;padding:6px 14px;border-bottom:1px solid rgba(212,175,55,.2)}
+#help td:first-child{color:var(--gold);white-space:nowrap}
+#mnav{display:none}
+
+@media (max-width:820px),(max-height:520px){
+  #tools{display:none}.navz{display:none}#pageno{display:none}
+  #mnav{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:60;height:52px;align-items:center;justify-content:space-between;
+    padding:0 10px calc(env(safe-area-inset-bottom)) 10px;background:rgba(8,6,4,.9);border-top:1px solid var(--line)}
+  #mnav button{background:none;border:1px solid var(--line);color:var(--gold);border-radius:22px;font-size:16px;padding:6px 16px}
+  #mnav span{font-family:var(--display);color:var(--champ);font-size:16px}
+}
+@media (max-height:520px) and (orientation:landscape){#mnav{opacity:.0;transition:.3s}#mnav:hover,#mnav:focus-within{opacity:1}}
+@media print{#bokeh,#fizz,#tools,#bar,#pageno,.navz{display:none}}
+/* 內容在標題下方的剩餘空間垂直置中 */
+.slide:not(.nopad){display:flex;flex-direction:column}
+.slide:not(.nopad)>.hd{flex:none}
+.slide:not(.nopad)>.hd~*:not(.src):not(.badge){flex:none}
+.slide:not(.nopad)>.hd+*{margin-top:auto}
+.slide:not(.nopad)>*:last-child:not(.src){margin-bottom:auto}
+.slide:not(.nopad)>.src:last-child{margin:0}
+.slide:not(.nopad)>.hd~.src{position:absolute}
+
+/* 公式：變數與下標相連、根號 */
+.nv{white-space:nowrap}
+.rad{display:inline-flex;align-items:stretch;vertical-align:middle}
+.rad .rs{font-size:1.25em;line-height:1;align-self:center;margin-right:-1px}
+.rad .ri{border-top:2px solid var(--white);padding:3px 6px 0}
+.rad .frac{font-size:.72em}
+.t71 td{padding:7px 12px}
+/* ===== 互動元件 ===== */
+.ia-wrap{position:relative}
+.ia-q{font-size:30px;line-height:1.55;letter-spacing:.05em;margin-bottom:16px}
+.ia-q .hl{font-size:1em}
+.ia-tip{font-size:21px;color:var(--champ3);letter-spacing:.06em}
+.ia-bar{display:flex;gap:12px;align-items:center;margin-top:16px;min-height:46px}
+.ia-score{font-family:var(--display);font-size:24px;color:var(--gold);margin-left:auto;letter-spacing:.06em}
+
+/* 分類 */
+.pool{display:flex;flex-wrap:wrap;gap:10px;min-height:56px;padding:12px;border:1px dashed rgba(212,175,55,.35);border-radius:16px;background:rgba(255,215,0,.03)}
+.pool:empty::after{content:"全部放好了！";color:var(--champ3);font-size:19px;padding:8px}
+.bins{display:grid;gap:14px;margin-top:14px}
+.bin{border:1px solid var(--line);border-radius:18px;padding:12px 14px;background:var(--card);min-height:120px;transition:.18s;cursor:pointer}
+.bin h4{font-size:25px;color:var(--gold);letter-spacing:.08em;margin-bottom:8px;display:flex;gap:8px;align-items:center}
+.bin h4 small{font-size:16px;color:var(--champ3);font-weight:400}
+.bin .in{display:flex;flex-wrap:wrap;gap:8px}
+.bin.tgt{border-color:var(--gold);box-shadow:0 0 22px rgba(255,215,0,.25)}
+.chip .fix{font-size:15px;color:var(--bad);margin-left:4px}
+.why{font-size:19px;color:var(--champ2);line-height:1.55;margin-top:10px}
+
+/* 排序 */
+.slots{display:grid;gap:10px;margin-top:14px}
+.slot{display:flex;align-items:center;gap:14px;border:1px dashed rgba(212,175,55,.45);border-radius:16px;padding:8px 12px;min-height:58px;background:rgba(255,215,0,.03)}
+.slot .chip{font-size:24px}
+
+/* 測驗 */
+.quiz-card{padding:26px 32px}
+.qno{font-family:var(--display);font-size:20px;color:var(--rose);letter-spacing:.2em}
+.opts{display:grid;gap:12px;margin-top:16px}
+.opt{display:flex;gap:16px;align-items:center;text-align:left;border:1px solid var(--line);border-radius:16px;padding:12px 18px;
+  background:rgba(255,255,255,.025);color:var(--champ);font-size:25px;line-height:1.45;letter-spacing:.04em;transition:.18s}
+.opt:hover{border-color:var(--gold)}
+.opt .k{flex:none;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-family:var(--display);font-size:18px;border:1px solid var(--gold2);color:var(--gold)}
+.opt.sel{border-color:var(--gold);background:rgba(255,215,0,.16);box-shadow:0 0 18px rgba(255,215,0,.25)}
+.opt.sel .k{background:var(--gold);color:#241703}
+.opt.ok{border-color:var(--ok);background:rgba(185,242,161,.13)}
+.opt.ok .k{background:var(--ok);color:#173009;border-color:var(--ok)}
+.opt.no{border-color:var(--bad);background:rgba(255,156,138,.12)}
+.dots{display:flex;gap:8px}
+.dots i{width:12px;height:12px;border-radius:50%;border:1px solid var(--gold2)}
+.dots i.cur{background:var(--gold)}
+.dots i.done{background:rgba(255,215,0,.4)}
+.reveal{margin-top:14px;padding:14px 18px;border-left:3px solid var(--gold);background:rgba(255,215,0,.06);border-radius:0 14px 14px 0;font-size:23px;line-height:1.6;color:var(--champ)}
+
+/* 投票 */
+.vote{display:grid;gap:14px}
+.vrow{display:grid;grid-template-columns:52px 1fr 120px;gap:16px;align-items:center;cursor:pointer}
+.vrow .lab{font-size:27px;letter-spacing:.05em;position:relative;z-index:1;padding:10px 16px}
+.vtrack{position:relative;border:1px solid var(--line);border-radius:30px;overflow:hidden;background:rgba(255,255,255,.02)}
+.vfill{position:absolute;left:0;top:0;bottom:0;width:0;border-radius:30px;transition:width .5s;
+  background:linear-gradient(90deg,rgba(184,134,43,.55),rgba(255,215,0,.55));box-shadow:0 0 20px rgba(255,215,0,.35)}
+.vnum{font-family:var(--display);font-size:26px;color:var(--gold);text-align:right}
+.vnum small{font-size:16px;color:var(--champ3);margin-left:6px}
+
+/* 計算器 */
+.calc{display:grid;gap:14px}
+.sl{display:grid;grid-template-columns:290px 1fr 160px;gap:16px;align-items:center;font-size:28px}
+.sl b{font-family:var(--display);color:var(--gold);font-size:28px;text-align:right}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:6px;
+  background:linear-gradient(90deg,var(--gold2),rgba(212,175,55,.25));outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#FFF8D6,#FFD700 50%,#B8862B);box-shadow:0 0 14px rgba(255,215,0,.7);cursor:pointer}
+input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;border:none;background:#FFD700;box-shadow:0 0 14px rgba(255,215,0,.7)}
+.big{font-family:var(--display);font-size:64px;font-weight:700;line-height:1}
+.out{border:1px solid var(--gold);border-radius:20px;padding:18px 24px;background:rgba(255,215,0,.07);box-shadow:0 0 30px rgba(255,215,0,.15)}
+.out .lab{font-size:20px;color:var(--champ2);letter-spacing:.1em}
+.pres{display:flex;gap:10px;flex-wrap:wrap}
+
+/* 計數器 */
+.ctr{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.cbtn{border:1px solid var(--line);border-radius:20px;background:var(--card);color:var(--champ);padding:14px 10px;text-align:center;transition:.12s;user-select:none}
+.cbtn:active{transform:scale(.96);border-color:var(--gold);box-shadow:0 0 22px rgba(255,215,0,.35)}
+.cbtn .n{font-family:var(--display);font-size:46px;color:var(--gold);line-height:1.1}
+.cbtn .t{font-size:20px;letter-spacing:.05em}
+.cbtn .k{font-size:14px;color:var(--champ3)}
+.tabs{display:flex;gap:10px}
+.tabs .chip.sel{color:var(--white)}
+
+/* 檢核表 */
+.chk{display:flex;gap:14px;align-items:flex-start;font-size:27px;line-height:1.5;cursor:pointer;padding:10px 14px;border-radius:14px;border:1px solid transparent}
+.chk:hover{border-color:var(--line)}
+.chk .box{flex:none;width:30px;height:30px;border-radius:9px;border:1.5px solid var(--gold2);display:grid;place-items:center;color:#241703;font-weight:900;margin-top:3px}
+.chk.done .box{background:var(--gold);box-shadow:0 0 14px rgba(255,215,0,.6)}
+.chk.done .tx{color:var(--champ3);text-decoration:line-through;text-decoration-color:rgba(255,215,0,.5)}
+
+/* SVG 共用 */
+svg .gl{stroke:var(--gold2);fill:none;stroke-width:2}
+svg .glow{filter:drop-shadow(0 0 6px rgba(255,215,0,.7))}
+svg text{font-family:"Noto Serif TC",serif}
+.slide svg{fill:var(--champ)}
+.node{fill:rgba(255,215,0,.08);stroke:var(--gold2);stroke-width:1.5}
+.node.hot{fill:rgba(255,215,0,.22);stroke:var(--gold)}
+.loctype .bin{min-height:84px;padding:8px 12px}.loctype .bin h4{font-size:21px;margin-bottom:4px}.loctype .chip{font-size:19px;padding:6px 14px}
+.compact .bin{min-height:96px}.compact .chip{font-size:19px;padding:7px 14px}
+input.blank{background:transparent;border:none;border-bottom:1.5px solid var(--gold);color:var(--gold);font:inherit;font-family:var(--display);width:96px;text-align:center;outline:none;padding:0 4px}
+input.blank:focus{box-shadow:0 6px 12px -8px rgba(255,215,0,.8)}
+input.blank::placeholder{color:rgba(255,215,0,.35)}
+table.form input.blank{width:56px;font-size:19px}
+.ck{display:inline-flex;gap:6px;margin-right:12px;cursor:pointer;user-select:none}
+.ck::before{content:"□";color:var(--gold)}
+.ck.on::before{content:"■";text-shadow:0 0 8px rgba(255,215,0,.8)}
+
+.compact .chip{font-size:24px;padding:9px 18px}.compact .bin{min-height:130px}.compact .bin h4{font-size:27px}
+.ia-bar .btn{font-size:18px;padding:8px 16px;white-space:nowrap}
+.ia-bar .ia-tip{flex:1;min-width:0}
+table.form.tight td{height:auto;padding:3px 8px;font-size:15px}
+table.form.mid td{height:auto;padding:3px 10px;font-size:16px}
+
+table.form.pl td{font-size:18px;padding:3px 10px}
+.pres .btn{font-size:17px;padding:7px 14px}
+</style>
+</head>
+<body>
+<div id="bgfx"></div><div id="bokeh"></div><canvas id="fizz"></canvas>
+<div id="bar"></div>
+<div id="viewport"><div id="stage">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+ <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#FFD700"/></marker>
+ <marker id="arb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#5CC8FF"/></marker>
+ <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#F4B9A6"/></marker>
+ <filter id="gf" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+ <radialGradient id="pearl" cx=".38" cy=".32"><stop offset="0" stop-color="#FFF8D6"/><stop offset=".5" stop-color="#FFD700"/><stop offset="1" stop-color="#9C7A2B"/></radialGradient>
+</defs></svg>
+
+<!-- 1 封面 -->
+<section class="slide nopad" data-sec="開場" data-title="封面：商圈調查、立地評估與物流策略">
+ <div class="cover-img" data-bg="img/cover-1600.webp"></div>
+ <div class="sec-in" style="max-width:900px">
+  <div class="kicker">Retail Management · 115 學年度 零售管理</div>
+  <h1 class="gt" style="font-size:84px;margin-top:22px;line-height:1.18;font-weight:900">商圈調查、立地評估<br>與物流策略</h1>
+  <div class="sec-script" style="font-size:70px;margin-top:10px">Trade Area, Site &amp; Logistics</div>
+  <div class="small" style="margin-top:34px;font-size:21px">參考教材：吳師豪《零售管理：策略與實務》，前程文化</div>
+ </div>
+</section>
+
+<!-- 2 學習地圖 -->
+<section class="slide" data-sec="開場" data-title="今天的六段旅程">
+ <div class="hd"><div class="kicker">Course Map</div><h2 class="gt">今天的六段旅程</h2><div class="script">Six Toasts</div></div>
+ <div class="grid3" style="gap:22px">
+  <div class="card zoomless" data-goto="sec1" style="cursor:pointer"><div class="row mid" style="gap:16px"><span class="bub">01</span><h3 style="margin:0">店鋪開發的基本觀念</h3></div><p class="sub mt">開發觀念、評估流程、開發策略、黃金定律</p></div>
+  <div class="card" data-goto="sec2" style="cursor:pointer"><div class="row mid" style="gap:16px"><span class="bub">02</span><h3 style="margin:0">商圈定義、類型與評估</h3></div><p class="sub mt">商圈劃分、零售立地類型、評估步驟、來客數、動線</p></div>
+  <div class="card" data-goto="sec3" style="cursor:pointer"><div class="row mid" style="gap:16px"><span class="bub">03</span><h3 style="margin:0">商圈設定與立地調查</h3></div><p class="sub mt">飽和度、調查方法、範圍設定、調查紀錄表、流量調查</p></div>
+  <div class="card" data-goto="sec4" style="cursor:pointer"><div class="row mid" style="gap:16px"><span class="bub">04</span><h3 style="margin:0">立地理論與銷售預估</h3></div><p class="sub mt">地心引力、三角窗、漏斗、Reilly、Huff、迴歸、類比</p></div>
+  <div class="card" data-goto="sec5" style="cursor:pointer"><div class="row mid" style="gap:16px"><span class="bub">05</span><h3 style="margin:0">競合、投資與開店後評估</h3></div><p class="sub mt">競合店調查、損益平衡點、五年損益、地圖插針法</p></div>
+  <div class="card" data-goto="sec6" style="cursor:pointer"><div class="row mid" style="gap:16px"><span class="bub">06</span><h3 style="margin:0">零售與物流策略</h3></div><p class="sub mt">通路與物流、設立 DC 的動機、五種物流中心型態</p></div>
+ </div>
+ <p class="small c mt2">點任一張卡片可直接前往該段　·　按 <b class="hl">O</b> 看全部頁面　·　有 <span class="badge" style="position:static;padding:2px 10px;font-size:13px">INTERACTIVE</span> 標記的頁面可以和同學一起動手</p>
+</section>
+
+<!-- 3 開場投票 -->
+<section class="slide ia" data-sec="開場" data-title="暖身投票：手搖飲開在哪？">
+ <span class="badge">INTERACTIVE</span>
+ <div class="hd"><div class="kicker">Warm-up Vote</div><h2 class="gt">如果你是老闆…</h2><div class="script">Cheers First</div></div>
+ <div class="row" style="gap:44px">
+  <div class="f1"><div data-ia="opening"></div></div>
+  <div style="width:420px" class="col">
+   <div class="card glow"><h3>先憑直覺投一票</h3><p class="sub">今天學完商圈與立地的工具之後，最後再回來看看：你的直覺和分析結果一不一樣？</p></div>
+   <div class="card"><p class="small">想一想：這四個地點的人潮，各是<span class="hl">什麼時間</span>、<span class="hl">往哪個方向</span>走？他們會停下來買飲料嗎？</p></div>
+  </div>
+ </div>
+</section>
+
+<!-- 4 扉頁 01 -->
+<section class="slide nopad" id="sec1" data-sec="01 店鋪開發的基本觀念" data-title="01 店鋪開發的基本觀念">
+ <div class="cover-img" data-bg="img/sec1-1600.webp"></div>
+ <div class="sec-in"><div class="sec-no gt">01</div><div class="sec-title">店鋪開發的基本觀念</div><div class="sec-script">Store Development</div>
+  <div class="sec-list"><div><span>✦</span>店鋪開發的基本觀念</div><div><span>✦</span>潛力商圈立地評估流程</div><div><span>✦</span>店鋪開發策略</div><div><span>✦</span>店鋪開發的黃金定律</div></div></div>
+</section>
+
+<!-- 5 基本觀念 -->
+<section class="slide" data-sec="01 店鋪開發的基本觀念" data-title="店鋪開發的基本觀念">
+ <div class="hd"><div class="kicker">5.1 · Basic Concepts</div><h2 class="gt">店鋪開發的基本觀念</h2><div class="script">The Basics</div></div>
+ <div class="grid3" style="gap:22px">
+  <div class="card"><div class="row mid" style="gap:14px"><span class="bub sm">1</span><h3 style="margin:0">商圈立地評估架構</h3></div><p class="sub mt">從區域潛力一路評估到挖店、搶店的完整流程（下一頁）</p></div>
+  <div class="card"><div class="row mid" style="gap:14px"><span class="bub sm">2</span><h3 style="margin:0">商圈與立地</h3></div><p class="sub mt">商圈是顧客來源的「面」，立地是店舖所在的「點」</p></div>
+  <div class="card"><div class="row mid" style="gap:14px"><span class="bub sm">3</span><h3 style="margin:0">立地依賴型與立地開發型</h3></div><p class="sub mt">依賴位置帶來自然人潮的店，相對於靠商品力把顧客吸引過來的店</p></div>
+  <div class="card"><div class="row mid" style="gap:14px"><span class="bub sm">4</span><h3 style="margin:0">上班動線與下班動線</h3></div><p class="sub mt">人潮的時間與方向，決定店該開在路的哪一側</p></div>
+  <div class="card"><div class="row mid" style="gap:14px"><span class="bub sm">5</span><h3 style="margin:0">專業商店街</h3></div><p class="sub mt">同類型商店聚集成街，形成集客的磁場</p></div>
+  <div class="card"><div class="row mid" style="gap:14px"><span class="bub sm">6</span><h3 style="margin:0">商圈移動</h3></div><p class="sub mt">交通建設與都市計畫，會讓商圈的重心轉移</p></div>
+ </div>
+</section>
+
+<!-- 6 潛力商圈立地評估流程 -->
+<section class="slide" data-sec="01 店鋪開發的基本觀念" data-title="潛力商圈立地評估流程">
+ <div class="hd"><div class="kicker">Evaluation Flow</div><h2 class="gt">潛力商圈立地評估流程</h2><div class="script">Step by Step</div></div>
+ <svg viewBox="0 0 1424 600" style="width:100%;height:600px">
+  <g font-size="27" text-anchor="middle">
+   <rect class="node" x="10" y="230" width="210" height="80" rx="40"/><text x="115" y="279">區域潛力評估</text>
+   <rect class="node" x="285" y="230" width="180" height="80" rx="40"/><text x="375" y="279">商圈選定</text>
+   <rect class="node hot" x="530" y="230" width="180" height="80" rx="40" filter="url(#gf)"/><text x="620" y="279">商圈調查</text>
+   <rect class="node" x="530" y="430" width="180" height="80" rx="40"/><text x="620" y="479">商圈設定</text>
+   <rect class="node hot" x="775" y="230" width="180" height="80" rx="40" filter="url(#gf)"/><text x="865" y="279">立地調查</text>
+   <polygon points="1110,190 1225,270 1110,350 995,270" fill="rgba(255,215,0,.16)" stroke="#FFD700" stroke-width="2" filter="url(#gf)"/><text x="1110" y="279" fill="#FFD700" font-weight="700">投資評估</text>
+   <rect class="node hot" x="1250" y="60" width="164" height="80" rx="40"/><text x="1332" y="109" fill="#FFF6D2">挖店、搶店</text>
+   <rect class="node" x="1250" y="400" width="164" height="80" rx="40" style="stroke:#F4B9A6"/><text x="1332" y="449">再開發</text>
+  </g>
+  <g stroke="#FFD700" stroke-width="2.5" fill="none" marker-end="url(#ar)">
+   <path d="M220,270 H280"/><path d="M465,270 H525"/><path d="M710,270 H770"/><path d="M955,270 H990"/>
+   <path d="M600,315 V425"/><path d="M640,425 V320" stroke="#F4B9A6" marker-end="url(#arr)"/>
+   <path d="M1180,220 Q1200,100 1245,100"/>
+  </g>
+  <path d="M1180,320 Q1200,440 1245,440" stroke="#F4B9A6" stroke-width="2.5" fill="none" marker-end="url(#arr)"/>
+  <path d="M1332,480 V560 H115 V315" stroke="#F4B9A6" stroke-width="2" stroke-dasharray="8 8" fill="none" marker-end="url(#arr)"/>
+  <g font-size="28" font-family="Playfair Display" font-weight="700"><text x="1214" y="205" fill="#FFD700">Yes</text><text x="1214" y="358" fill="#F4B9A6">No</text></g>
+  <text x="720" y="590" font-size="23" fill="rgba(247,231,206,.85)" text-anchor="middle">投資評估不通過 → 回到區域重新開發</text>
+  <text x="660" y="380" font-size="23" fill="rgba(247,231,206,.85)">調查結果 ⇄ 設定範圍</text>
+ </svg>
+</section>
+
+<!-- 7 店鋪開發策略 -->
+<section class="slide" data-sec="01 店鋪開發的基本觀念" data-title="店鋪開發策略">
+ <div class="hd"><div class="kicker">5.2 · Development Strategy</div><h2 class="gt">店鋪開發策略</h2><div class="script">Why Open a Store</div></div>
+ <div class="grid4" style="gap:20px">
+  <div class="card c"><div class="bub" style="margin:0 auto 14px">1</div><p>提高市場佔有率</p></div>
+  <div class="card c"><div class="bub" style="margin:0 auto 14px">2</div><p>提高企業知名度<br><span class="small">曝光率、吸引加盟</span></p></div>
+  <div class="card c"><div class="bub" style="margin:0 auto 14px">3</div><p>提高企業形象</p></div>
+  <div class="card c"><div class="bub" style="margin:0 auto 14px">4</div><p>保護獲利商店<br>鞏固陣地</p></div>
+  <div class="card c"><div class="bub" style="margin:0 auto 14px">5</div><p>收集區域消費情報</p></div>
+  <div class="card c"><div class="bub" style="margin:0 auto 14px">6</div><p>打擊對手<br>削減對手獲利空間</p></div>
+  <div class="card c"><div class="bub" style="margin:0 auto 14px">7</div><p>求發展、求生存<br>求收益</p></div>
+  <div class="card c glow"><div class="bub" style="margin:0 auto 14px">8</div><p>轉進策略</p></div>
+ </div>
+</section>
+
+<!-- 8 黃金定律 -->
+<section class="slide" data-sec="01 店鋪開發的基本觀念" data-title="店鋪開發的黃金定律">
+ <div class="hd"><div class="kicker">5.3 · Golden Rules</div><h2 class="gt">店鋪開發的黃金定律</h2><div class="script">Golden Rules</div></div>
+ <div class="grid2" style="gap:18px 40px">
+  <div class="tile"><span class="bub">1</span><span>為開店找<span class="hl">合適的地點</span>，而不是為地點去開店</span></div>
+  <div class="tile"><span class="bub">5</span><span>店舖規模<span class="hl">適正</span>即可</span></div>
+  <div class="tile"><span class="bub">2</span><span>立地影響商店經營成敗關鍵</span></div>
+  <div class="tile"><span class="bub">6</span><span>同一商圈內，店與店之間有<span class="hl">互斥力</span>也有<span class="hl">互吸力</span></span></div>
+  <div class="tile"><span class="bub">3</span><span>不同業態的店，其商圈立地評估條件亦不相同</span></div>
+  <div class="tile"><span class="bub">7</span><span>選擇<span class="hl">一流立地條件</span>，而非進入一流商圈</span></div>
+  <div class="tile"><span class="bub">4</span><span>尋找<span class="hl">合適的</span>商圈比尋找好的商圈重要</span></div>
+  <div class="tile"><span class="bub">8</span><span>開店績效成敗取決於<span class="hl">租金率</span>而非租金</span></div>
+ </div>
+</section>
+
+<!-- 9 黃金定律診斷 -->
+<section class="slide ia" data-sec="01 店鋪開發的基本觀念" data-title="開店顧問診斷室（黃金定律）">
+ <span class="badge">INTERACTIVE</span>
+ <div class="hd"><div class="kicker">Consultant Clinic</div><h2 class="gt">開店顧問診斷室</h2><div class="script">Diagnose It</div></div>
+ <div class="card quiz-card" data-ia="golden"></div>
+</section>
+
+<!-- 扉頁 02 -->
+<section class="slide nopad" id="sec2" data-sec="02 商圈定義、類型與評估" data-title="02 商圈定義、類型與評估">
+ <div class="cover-img" data-bg="img/sec2-1600.webp" style="transform:scaleX(-1)"></div>
+ <div class="sec-in"><div class="sec-no gt">02</div><div class="sec-title">商圈定義、類型與評估</div><div class="sec-script">Trade Area</div>
+  <div class="sec-list"><div><span>✦</span>商圈定義與劃分</div><div><span>✦</span>零售立地類型</div><div><span>✦</span>商圈評估步驟與環境分析</div><div><span>✦</span>統計數據分析、來客數、上下班動線</div></div></div>
+</section>
+
+<!-- 商圈定義 -->
+<section class="slide" data-sec="02 商圈定義、類型與評估" data-title="商圈定義與商圈劃分">
+ <div class="hd"><div class="kicker">Trade Area · Definition</div><h2 class="gt">商圈定義與商圈劃分</h2><div class="script">Where Shoppers Come From</div></div>
+ <div class="row mid" style="gap:50px">
+  <div class="f1 col" style="gap:26px">
+   <div class="card glow"><h3>商圈定義</h3><p class="lead" style="font-size:27px">指一家零售店會光臨的顧客所來自的<span class="hl">地理區域</span>，也就是在這地理區域內的顧客很有可能會去該零售店購買產品或服務。</p></div>
+   <div class="card"><h3>商圈劃分</h3>
+    <ul class="sp big">
+     <li><b class="hl">主要商圈</b> <span class="en">Primary Trade Area</span><small>來店顧客的 50%～70%</small></li>
+     <li><b class="hl">次要商圈</b> <span class="en">Secondary Trade Area</span><small>來店顧客的 20%～30%</small></li>
+     <li><b class="hl">邊緣商圈</b> <span class="en">Tertiary Trade Area</span><small>其餘零星、較遠的顧客</small></li>
+    </ul></div>
+  </div>
+  <svg viewBox="0 0 560 560" style="width:560px;height:560px;flex:none">
+   <circle cx="280" cy="280" r="265" fill="rgba(244,185,166,.06)" stroke="#F4B9A6" stroke-width="1.5" stroke-dasharray="6 8"/>
+   <circle cx="280" cy="280" r="190" fill="rgba(255,215,0,.07)" stroke="#D4AF37" stroke-width="2"/>
+   <circle cx="280" cy="280" r="110" fill="rgba(255,215,0,.16)" stroke="#FFD700" stroke-width="2.5" filter="url(#gf)"/>
+   <circle cx="280" cy="280" r="22" fill="url(#pearl)" filter="url(#gf)"/>
+   <g text-anchor="middle"><text x="280" y="248" font-size="26" fill="#FFF6D2" font-weight="700">主要商圈</text><text x="280" y="330" font-size="22" fill="#FFD700" font-family="Playfair Display">50–70%</text>
+   <text x="280" y="125" font-size="24">次要商圈</text><text x="280" y="155" font-size="21" fill="#FFD700" font-family="Playfair Display">20–30%</text>
+   <text x="280" y="50" font-size="22" fill="#F4B9A6">邊緣商圈</text><text x="280" y="290" font-size="18" fill="#241703" font-weight="700">店</text></g>
+  </svg>
+ </div>
+</section>
+
+<!-- 零售立地類型 -->
+<section class="slide" data-sec="02 商圈定義、類型與評估" data-title="零售立地類型與正確的決策">
+ <div class="hd"><div class="kicker">Retail Location Types</div><h2 class="gt">零售立地類型</h2><div class="script">Two Kinds of Sites</div></div>
+ <div class="grid2" style="gap:36px">
+  <div class="card" style="padding:34px"><div class="row mid" style="gap:16px"><span class="bub">A</span><h3 style="margin:0;font-size:36px">未規劃的零售立地</h3></div><p class="sub mt">單獨的商店，與其他零售商沒有直接連結與集中管理</p></div>
+  <div class="card" style="padding:34px"><div class="row mid" style="gap:16px"><span class="bub">B</span><h3 style="margin:0;font-size:36px">已規劃的零售立地</h3></div><p class="sub mt">由零售商或商業機構妥善規劃與管理所形成</p></div>
+ </div>
+ <div class="row mid mt2" style="justify-content:center;gap:18px">
+  <div class="bub" style="width:120px;height:120px;font-size:34px;font-family:var(--serif)">評估</div><span class="hl" style="font-size:40px">›</span>
+  <div class="bub" style="width:120px;height:120px;font-size:34px;font-family:var(--serif)">了解</div><span class="hl" style="font-size:40px">›</span>
+  <div class="bub" style="width:120px;height:120px;font-size:34px;font-family:var(--serif)">選擇</div><span class="hl" style="font-size:40px">›</span>
+  <div class="bub" style="width:120px;height:120px;font-size:34px;font-family:var(--serif)">調整</div><span class="hl" style="font-size:40px">=</span>
+  <div class="box-gold c" style="padding:22px 34px"><div class="sec-script" style="font-size:44px;margin:0">Right Choice</div><div style="font-size:40px;font-weight:900" class="gt">正確的決策</div></div>
+ </div>
+</section>
+
+<!-- 未規劃 -->
+<section class="slide" data-sec="02 商圈定義、類型與評估" data-title="未規劃的零售立地：優點與缺點">
+ <div class="hd"><div class="kicker">Type A · Unplanned</div><h2 class="gt">未規劃的零售立地</h2><div class="script">Standing Alone</div></div>
+ <p class="lead" style="margin-top:0">有些立地為<span class="hl">單獨的商店</span>，與其他零售商店沒有直接連結與集中管理決策的關係。</p>
+ <div class="grid2" style="gap:30px;margin-top:14px">
+  <div class="card" style="border-color:rgba(185,242,161,.5)"><h3 style="color:var(--ok)">✦ 優點</h3><p class="lead" style="font-size:28px">地點選擇較有彈性<br><span class="sub">（高能見度、高車流量等）</span></p></div>
+  <div class="card" style="border-color:rgba(255,156,138,.5)"><h3 style="color:var(--bad)">✦ 缺點</h3><p class="lead" style="font-size:28px">無法與其他零售商店共同分擔成本<br><span class="sub">（水電、燈光等）</span></p></div>
+ </div>
+ <div class="grid4" style="gap:16px;margin-top:20px">
+  <div class="ph zoomable" style="height:300px"><img data-src="img/ch07-s04-4-700.webp" alt="街邊獨立店面"></div>
+  <div class="ph zoomable" style="height:300px"><img data-src="img/ch07-s04-3-700.webp" alt="街邊獨立店面"></div>
+  <div class="ph zoomable" style="height:300px"><img data-src="img/ch07-s04-2-700.webp" alt="街邊獨立店面"></div>
+  <div class="ph zoomable" style="height:300px"><img data-src="img/ch07-s04-1-700.webp" alt="街邊獨立店面"></div>
+ </div>
+</section>
+
+<!-- 已規劃 -->
+<section class="slide" data-sec="02 商圈定義、類型與評估" data-title="已規劃的零售立地：八種類型">
+ <div class="hd"><div class="kicker">Type B · Planned</div><h2 class="gt">已規劃的零售立地</h2><div class="script">Planned Together</div></div>
+ <p class="lead">由一群零售商或是專門的商業機構經過<span class="hl">妥善的規劃與管理</span>所形成的立地型態。</p>
+ <svg viewBox="0 0 1424 470" style="width:100%;height:470px;margin-top:10px">
+  <text x="712" y="40" text-anchor="middle" font-size="30" fill="#F4B9A6" font-weight="700" letter-spacing="6">已規劃類型</text>
+  <g text-anchor="middle" font-size="30" font-weight="700">
+   <g transform="translate(180,170)"><circle r="92" fill="url(#pearl)" opacity=".92" filter="url(#gf)"/><text y="11" fill="#241703">轉運型</text></g>
+   <g transform="translate(420,300)"><circle r="92" fill="url(#pearl)" opacity=".92" filter="url(#gf)"/><text y="11" fill="#241703">校園型</text></g>
+   <g transform="translate(600,150)"><circle r="80" fill="rgba(255,215,0,.15)" stroke="#FFD700" stroke-width="2"/><text y="11" fill="#FFF6D2">遊樂型</text></g>
+   <g transform="translate(800,320)"><circle r="92" fill="url(#pearl)" opacity=".92" filter="url(#gf)"/><text y="11" fill="#241703">夜市型</text></g>
+   <g transform="translate(990,150)"><circle r="80" fill="rgba(255,215,0,.15)" stroke="#FFD700" stroke-width="2"/><text y="11" fill="#FFF6D2">店中店</text></g>
+   <g transform="translate(1160,320)"><circle r="92" fill="url(#pearl)" opacity=".92" filter="url(#gf)"/><text y="11" fill="#241703">都會型</text></g>
+   <g transform="translate(280,410)"><circle r="56" fill="rgba(244,185,166,.16)" stroke="#F4B9A6" stroke-width="2"/><text y="11" font-size="26" fill="#FFE9E0">社區型</text></g>
+   <g transform="translate(1310,150)"><circle r="70" fill="rgba(244,185,166,.16)" stroke="#F4B9A6" stroke-width="2"/><text y="11" font-size="28" fill="#FFE9E0">辦公型</text></g>
+  </g>
+ </svg>
+</section>
+
+<!-- 表 7-1 -->
+<section class="slide" data-sec="02 商圈定義、類型與評估" data-title="表 7-1 零售立地類型（特徵與案例）">
+ <div class="src">資料來源：整理自蔡博涼（1995），《零售商圈評估與店址選擇－以高雄大統商業區域為例》，國立中山大學企管所碩士論文；Levy &amp; Weitz (2009), <i>Retailing Management</i>.</div>
+ <div class="hd"><div class="kicker">Table 7-1</div><h2 class="gt">零售立地類型一覽</h2><div class="script">Nine Types</div></div>
+ <div class="row" style="gap:30px">
+  <table class="tb f1 t71" style="font-size:23px">
+   <tr><th style="width:96px">類型</th><th>特徵</th><th style="width:400px">案例</th></tr>
+   <tr><td>獨立店</td><td>多位在車流量高、能見度高的區域，提供顧客便利性</td><td>便利超商、速食餐廳、藥妝店</td></tr>
+   <tr><td>店中店</td><td>零售商將商場內的櫃位及空間出租，讓其他零售商進駐，提高吸引力</td><td>百貨公司、綜合型量販店、購物中心</td></tr>
+   <tr><td>都會型</td><td>大多數人主要購物、休閒、娛樂的地方</td><td>臺北市西門町、高雄市三多商圈</td></tr>
+   <tr><td>社區型</td><td>服務社區住戶為主的零售業者</td><td>臺北市民生社區、高雄市尖美社區</td></tr>
+   <tr><td>辦公型</td><td>服務該區上班為主的人員，白天生意會比晚上好</td><td>臺北市民生東路、高雄市中正路</td></tr>
+   <tr><td>轉運型</td><td>因交通工具的轉運造成人潮流動率高，停留時間不長</td><td>各地區之火車站</td></tr>
+   <tr><td>校園型</td><td>顧客多為教職員生，寒暑假生意明顯差異</td><td>臺灣大學公館、成功大學勝利路及大學路</td></tr>
+   <tr><td>遊樂型</td><td>顧客多為遊客，生意有季節性之分</td><td>墾丁、日月潭</td></tr>
+   <tr><td>夜市型</td><td>顧客多為附近的居民，也有外來客，晚上生意會比白天好</td><td>臺北市士林夜市、高雄市瑞豐夜市</td></tr>
+  </table>
+  <div class="col" style="width:170px;gap:12px;align-self:center">
+   <div class="ph zoomable" style="height:130px"><img data-src="img/ch05-s07-1-500.webp" alt="獨立店：便利商店"></div>
+   <div class="ph zoomable" style="height:130px"><img data-src="img/ch05-s07-2-500.webp" alt="店中店：百貨公司"></div>
+   <div class="ph zoomable" style="height:130px"><img data-src="img/ch05-s07-3-500.webp" alt="夜市型"></div>
+  </div>
+ </div>
+</section>
+
+<!-- 互動：立地類型配對 -->
+<section class="slide ia" data-sec="02 商圈定義、類型與評估" data-title="互動：這家店是哪一種立地？">
+ <span class="badge">INTERACTIVE</span>
+ <div class="hd"><div class="kicker">Match the Site</div><h2 class="gt">這家店是哪一種立地？</h2><div class="script">Your Turn</div></div>
+ <div data-ia="loctype" class="loctype"></div>
+</section>
+
+<!-- 商圈評估步驟 -->
+<section class="slide" data-sec="02 商圈定義、類型與評估" data-title="商圈評估步驟">
+ <div class="hd"><div class="kicker">Trade Area Evaluation</div><h2 class="gt">商圈評估步驟</h2><div class="script">Six Steps</div></div>
+ <div style="position:relative;height:620px">
+  <svg viewBox="0 0 1424 620" style="position:absolute;inset:0;width:100%;height:100%">
+   <ellipse cx="712" cy="310" rx="470" ry="245" fill="none" stroke="#D4AF37" stroke-width="2" stroke-dasharray="4 10"/>
+   <g stroke="#FFD700" stroke-width="3" fill="none" marker-end="url(#ar)">
+    <path d="M420,150 Q480,95 560,82"/><path d="M870,82 Q950,95 1010,150"/><path d="M1150,250 Q1170,300 1150,350"/>
+    <path d="M1010,470 Q950,525 870,538"/><path d="M560,538 Q480,525 420,470"/>
+   </g>
+  </svg>
+  <div class="ph" style="position:absolute;left:592px;top:200px;width:240px;height:170px;border-radius:24px;background:#fff"><img data-src="img/ch05-s08-1-500.webp" alt="商圈評估" style="object-fit:contain"></div>
+  <div class="tile" style="position:absolute;left:110px;top:180px;width:330px;white-space:nowrap"><span class="bub">1</span>確定目標客群</div>
+  <div class="tile" style="position:absolute;left:547px;top:30px;width:330px;white-space:nowrap"><span class="bub">2</span>決定商圈範圍</div>
+  <div class="tile" style="position:absolute;left:990px;top:180px;width:320px;white-space:nowrap"><span class="bub">3</span>資料蒐集</div>
+  <div class="tile" style="position:absolute;left:990px;top:360px;width:320px;white-space:nowrap"><span class="bub">4</span>附近住戶調查</div>
+  <div class="tile" style="position:absolute;left:547px;top:500px;width:330px;white-space:nowrap"><span class="bub">5</span>附近競爭者分析</div>
+  <div class="tile glow" style="position:absolute;left:110px;top:360px;width:330px;white-space:nowrap;border-color:var(--gold)"><span class="bub">6</span>決定立地位址</div>
+ </div>
+</section>
+
+<!-- 環境分析 -->
+<section class="slide" data-sec="02 商圈定義、類型與評估" data-title="環境分析：評估立地條件因素">
+ <div class="hd"><div class="kicker">Environment Analysis</div><h2 class="gt">環境分析：評估立地條件因素</h2><div class="script">Site Factors</div></div>
+ <div class="grid2" style="gap:30px">
+  <div class="card"><h3>交通流量及易接近性</h3><ul class="sp" style="gap:10px">
+   <li>車子流量 <span class="en">Vehicular Traffic</span></li><li>車輛進入容易度 <span class="en">Accessibility</span></li>
+   <li>街道擁擠度 <span class="en">Congestion</span></li><li>行人交通 <span class="en">Pedestrian Traffic</span></li>
+   <li>大眾運輸工具 <span class="en">Public Transportation</span></li></ul></div>
+  <div class="card"><h3>立地特性</h3><ul class="sp" style="gap:10px">
+   <li>停車場（方便性）</li><li>能見度（通道、商店外觀）</li><li>附近競爭者分析（互補、互斥）</li></ul></div>
+ </div>
+ <div class="grid4 mt" style="gap:16px">
+  <div class="ph zoomable" style="height:150px"><img data-src="img/ch05-s09-1-700.webp" alt="車流"></div>
+  <div class="ph zoomable" style="height:150px"><img data-src="img/ch05-s09-4-700.webp" alt="街景"></div>
+  <div class="ph zoomable" style="height:150px"><img data-src="img/ch05-s09-3-700.webp" alt="大眾運輸"></div>
+  <div class="ph zoomable" style="height:150px"><img data-src="img/ch05-s09-2-700.webp" alt="停車"></div>
+ </div>
+</section>
+
+<!-- 人口統計 -->
+<section class="slide" data-sec="02 商圈定義、類型與評估" data-title="統計數據分析：人口統計資料">
+ <div class="hd"><div class="kicker">Statistics · Census</div><h2 class="gt">統計數據分析：人口統計資料</h2><div class="script">Know the People</div></div>
+ <div class="row mid" style="gap:40px">
+  <div class="card" style="width:470px"><h3 style="font-size:34px">立地條件分析</h3><p class="sub" style="font-size:28px;line-height:1.7">人口統計資料 <span class="en">Census</span><br>從政府的<span class="hl">戶口及住宅普查</span>，回答「這裡住了誰？」</p></div>
+  <svg viewBox="0 0 900 560" style="flex:1;height:560px">
+   <g transform="translate(450,280)">
+    <circle r="150" fill="url(#pearl)" filter="url(#gf)"/>
+    <text text-anchor="middle" y="-8" font-size="34" font-weight="900" fill="#241703">全國性戶口及</text><text text-anchor="middle" y="38" font-size="34" font-weight="900" fill="#241703">住宅普查</text>
+   </g>
+   <g font-size="27" text-anchor="middle" fill="#FFF6D2">
+    <g transform="translate(160,90)"><circle r="78" fill="rgba(255,215,0,.12)" stroke="#D4AF37"/><text y="9">老年人口數？</text></g>
+    <g transform="translate(450,60)"><circle r="56" fill="rgba(244,185,166,.14)" stroke="#F4B9A6"/><text y="9" font-size="24">人口密度？</text></g>
+    <g transform="translate(740,95)"><circle r="82" fill="rgba(255,215,0,.12)" stroke="#D4AF37"/><text y="9">男女人口總數？</text></g>
+    <g transform="translate(110,320)"><circle r="70" fill="rgba(244,185,166,.14)" stroke="#F4B9A6"/><text y="9" font-size="24">住戶概況？</text></g>
+    <g transform="translate(800,300)"><circle r="56" fill="rgba(255,215,0,.12)" stroke="#D4AF37"/><text y="9">單身？</text></g>
+    <g transform="translate(300,490)"><circle r="66" fill="rgba(255,215,0,.12)" stroke="#D4AF37"/><text y="9" font-size="23">平均年齡？</text></g>
+    <g transform="translate(660,480)"><circle r="76" fill="rgba(244,185,166,.14)" stroke="#F4B9A6"/><text y="9" font-size="24">與父母同住？</text></g>
+   </g>
+  </svg>
+ </div>
+</section>
+
+<!-- GIS -->
+<section class="slide" data-sec="02 商圈定義、類型與評估" data-title="統計數據分析：地理資訊系統 GIS">
+ <div class="hd"><div class="kicker">Statistics · GIS</div><h2 class="gt">地理資訊系統 GIS</h2><div class="script">Maps that Think</div></div>
+ <div class="row mid" style="gap:40px">
+  <div class="col" style="width:520px;gap:22px">
+   <p class="lead">地理資訊系統 <span class="en">Geographic Information System</span> 把各種資料<span class="hl">疊在地圖上</span>，整合分析：</p>
+   <div class="grid2" style="gap:16px">
+    <div class="tile"><span class="bub sm">1</span>空間特性</div><div class="tile"><span class="bub sm">2</span>消費型態</div>
+    <div class="tile"><span class="bub sm">3</span>生活方式</div><div class="tile"><span class="bub sm">4</span>人口統計</div>
+   </div>
+  </div>
+  <div class="f1"><div class="fig zoomable" style="height:500px;padding:10px"><img data-src="img/ch07-s10-1-1000.webp" alt="Google Maps 地理資訊"></div><div class="figcap">整合相關地理資訊系統（以 Google 地圖為例）</div></div>
+ </div>
+</section>
+
+<!-- 樹形圖 -->
+<section class="slide" data-sec="02 商圈定義、類型與評估" data-title="影響來客數的樹形圖分析">
+ <div class="hd"><div class="kicker">Customer Tree</div><h2 class="gt">影響來客數的樹形圖分析</h2><div class="script">What Brings Them In</div></div>
+ <svg viewBox="0 0 1424 640" style="width:100%;height:640px">
+  <g stroke="#D4AF37" stroke-width="2" fill="none">
+   <path d="M250,320 H330 M330,90 V545 M330,90 H420 M330,320 H420 M330,545 H420"/>
+   <path d="M640,90 H720 M720,50 V130 M720,50 H800 M720,130 H800"/>
+   <path d="M640,320 H720 M720,190 V450 M720,190 H800 M720,242 H800 M720,294 H800 M720,346 H800 M720,398 H800 M720,450 H800"/>
+   <path d="M640,545 H720 M720,510 V615 M720,510 H800 M720,545 H800 M720,580 H800 M720,615 H800"/>
+  </g>
+  <g text-anchor="middle">
+   <rect x="40" y="250" width="210" height="140" rx="30" fill="url(#pearl)" filter="url(#gf)"/><text x="145" y="314" font-size="34" font-weight="900" fill="#241703">交易客數</text><text x="145" y="352" font-size="18" fill="#3a2a08">每天成交的客人</text>
+   <rect class="node hot" x="420" y="55" width="220" height="70" rx="35"/><text x="530" y="100" font-size="28" font-weight="700" fill="#FFD700">通行客數</text>
+   <rect class="node hot" x="420" y="285" width="220" height="70" rx="35"/><text x="530" y="330" font-size="28" font-weight="700" fill="#FFD700">入店率</text>
+   <rect class="node hot" x="420" y="510" width="220" height="70" rx="35"/><text x="530" y="555" font-size="28" font-weight="700" fill="#FFD700">成交率</text>
+  </g>
+  <g font-size="23">
+   <text x="815" y="58">商圈立地條件</text><text x="815" y="138">人（車）流量</text>
+   <text x="815" y="198">招牌門面明顯度</text><text x="815" y="250">招牌門面清潔度</text><text x="815" y="302">商店知名度</text><text x="815" y="354">顧客忠誠度</text><text x="815" y="406">關係行銷技巧</text><text x="815" y="458">促銷活動</text>
+   <text x="815" y="518">商品力</text><text x="815" y="553">販賣力</text><text x="815" y="588">服務力</text><text x="815" y="623">促銷活動</text>
+  </g>
+  <g transform="translate(1100,180)"><rect width="320" height="280" rx="24" fill="rgba(255,215,0,.07)" stroke="#FFD700"/>
+   <text x="160" y="58" text-anchor="middle" font-size="29" font-weight="700" fill="#F4B9A6">樹形圖的算式</text>
+   <text x="160" y="120" text-anchor="middle" font-size="32" fill="#FFD700" font-weight="700">交易客數 ＝</text>
+   <text x="160" y="180" text-anchor="middle" font-size="28">通行客數 × 入店率</text><text x="160" y="226" text-anchor="middle" font-size="28">× 成交率</text></g>
+ </svg>
+</section>
+
+<!-- 互動：來客數計算器 -->
+<section class="slide ia" data-sec="02 商圈定義、類型與評估" data-title="互動：來客數三槓桿">
+ <span class="badge">INTERACTIVE</span>
+ <div class="hd"><div class="kicker">Pull the Levers</div><h2 class="gt">來客數三槓桿</h2><div class="script">Play With It</div></div>
+ <div data-ia="funnel"></div>
+</section>
+
+<!-- 上下班動線 -->
+<section class="slide" data-sec="02 商圈定義、類型與評估" data-title="上班動線與下班動線示意圖">
+ <div class="hd"><div class="kicker">Commuting Flows</div><h2 class="gt">上班動線與下班動線</h2><div class="script">Morning &amp; Evening</div></div>
+ <svg viewBox="0 0 1424 640" style="width:100%;height:640px" id="commuteFig">
+  <defs><g id="lane"><line x1="0" y1="0" x2="440" y2="0" stroke-width="3"/></g></defs>
+  <g font-size="26" text-anchor="middle">
+   <!-- 具備 -->
+   <rect x="0" y="0" width="1424" height="300" rx="26" fill="rgba(255,215,0,.05)" stroke="rgba(255,215,0,.5)"/>
+   <text x="712" y="45" font-size="30" font-weight="900" fill="#FFD700">具備上班動線與下班動線條件</text>
+   <text x="90" y="160" fill="#FFFFFF">辦公區</text><text x="90" y="192" fill="#FFFFFF">學校</text><text x="1335" y="175" fill="#FFFFFF">住宅</text>
+   <text x="420" y="88" fill="#FFF6D2">上班（早上）</text><text x="1000" y="88" fill="#FFF6D2">下班（傍晚）</text>
+  </g>
+  <g stroke="#D4AF37" stroke-width="5"><line x1="190" y1="105" x2="650" y2="105"/><line x1="190" y1="255" x2="650" y2="255"/><line x1="770" y1="105" x2="1230" y2="105"/><line x1="770" y1="255" x2="1230" y2="255"/></g>
+  <g stroke="#FFD700" stroke-width="4" marker-end="url(#ar)"><line x1="640" y1="135" x2="200" y2="135"/><line x1="640" y1="165" x2="200" y2="165"/><line x1="640" y1="195" x2="200" y2="195"/><line x1="1220" y1="135" x2="780" y2="135"/></g>
+  <g stroke="#5CC8FF" stroke-width="4" marker-end="url(#arb)"><line x1="200" y1="225" x2="640" y2="225"/><line x1="780" y1="165" x2="1220" y2="165"/><line x1="780" y1="195" x2="1220" y2="195"/><line x1="780" y1="225" x2="1220" y2="225"/></g>
+  <g font-size="21" fill="#F7E7CE" text-anchor="middle"><text x="420" y="288">往辦公區的車流明顯較多</text><text x="1000" y="288">往住宅的車流明顯較多</text></g>
+  <!-- 未具備 -->
+  <g transform="translate(0,330)">
+   <rect x="0" y="0" width="1424" height="300" rx="26" fill="rgba(255,255,255,.02)" stroke="rgba(247,231,206,.25)"/>
+   <text x="712" y="45" font-size="30" font-weight="900" fill="#5CC8FF" text-anchor="middle">未具備上班動線與下班動線條件</text>
+   <g font-size="26" text-anchor="middle"><text x="90" y="175" fill="#FFFFFF">辦公區</text><text x="1335" y="175" fill="#FFFFFF">住宅</text>
+   <text x="420" y="88" fill="#FFF6D2">上班（早上）</text><text x="1000" y="88" fill="#FFF6D2">下班（傍晚）</text></g>
+   <g stroke="rgba(212,175,55,.7)" stroke-width="5"><line x1="190" y1="105" x2="650" y2="105"/><line x1="190" y1="255" x2="650" y2="255"/><line x1="770" y1="105" x2="1230" y2="105"/><line x1="770" y1="255" x2="1230" y2="255"/></g>
+   <g stroke="#FFD700" stroke-width="4" marker-end="url(#ar)" opacity=".8"><line x1="640" y1="135" x2="200" y2="135"/><line x1="640" y1="165" x2="200" y2="165"/><line x1="1220" y1="135" x2="780" y2="135"/><line x1="1220" y1="165" x2="780" y2="165"/></g>
+   <g stroke="#5CC8FF" stroke-width="4" marker-end="url(#arb)" opacity=".8"><line x1="200" y1="195" x2="640" y2="195"/><line x1="200" y1="225" x2="640" y2="225"/><line x1="780" y1="195" x2="1220" y2="195"/><line x1="780" y1="225" x2="1220" y2="225"/></g>
+   <g font-size="21" fill="#F7E7CE" text-anchor="middle"><text x="420" y="288">兩個方向的車流差不多</text><text x="1000" y="288">兩個方向的車流差不多</text></g>
+  </g>
+ </svg>
+</section>
+
+<!-- 互動：動線判斷 -->
+<section class="slide ia" data-sec="02 商圈定義、類型與評估" data-title="互動：店要開在路的哪一側？">
+ <span class="badge">INTERACTIVE</span>
+ <div class="hd"><div class="kicker">Which Side?</div><h2 class="gt">店要開在路的哪一側？</h2><div class="script">Read the Flow</div></div>
+ <div class="row" style="gap:34px">
+  <svg viewBox="0 0 560 560" style="width:560px;height:560px;flex:none">
+   <rect x="0" y="0" width="560" height="560" rx="26" fill="rgba(255,215,0,.04)" stroke="rgba(255,215,0,.35)"/>
+   <text x="280" y="44" text-anchor="middle" font-size="26" fill="#FFFFFF">← 辦公區、學校　　　住宅區 →</text>
+   <rect x="30" y="200" width="500" height="160" fill="rgba(255,255,255,.03)"/>
+   <line x1="30" y1="200" x2="530" y2="200" stroke="#D4AF37" stroke-width="5"/><line x1="30" y1="360" x2="530" y2="360" stroke="#D4AF37" stroke-width="5"/>
+   <line x1="30" y1="280" x2="530" y2="280" stroke="rgba(247,231,206,.5)" stroke-width="3" stroke-dasharray="18 14"/>
+   <g stroke="#FFD700" stroke-width="4" marker-end="url(#ar)"><line x1="500" y1="225" x2="60" y2="225"/><line x1="500" y1="255" x2="60" y2="255"/></g>
+   <g stroke="#5CC8FF" stroke-width="4" marker-end="url(#arb)"><line x1="60" y1="305" x2="500" y2="305"/><line x1="60" y1="335" x2="500" y2="335"/></g>
+   <text x="280" y="120" text-anchor="middle" font-size="25" fill="#FFD700">上班動線側</text><text x="280" y="152" text-anchor="middle" font-size="19" fill="#F7E7CE">早上車流往辦公區</text>
+   <text x="280" y="420" text-anchor="middle" font-size="25" fill="#5CC8FF">下班動線側</text><text x="280" y="452" text-anchor="middle" font-size="19" fill="#F7E7CE">傍晚車流回住宅區</text>
+   <g data-q="0" style="opacity:0;transition:.4s"><rect x="200" y="160" width="160" height="34" rx="17" fill="#FFD700"/><text x="280" y="184" text-anchor="middle" font-size="20" fill="#241703" font-weight="700">早餐店 ✦</text></g>
+   <g data-q="1" style="opacity:0;transition:.4s"><rect x="200" y="366" width="160" height="34" rx="17" fill="#5CC8FF"/><text x="280" y="390" text-anchor="middle" font-size="20" fill="#241703" font-weight="700">生鮮超市 ✦</text></g>
+   <g data-q="2" style="opacity:0;transition:.4s"><rect x="20" y="186" width="520" height="188" rx="20" fill="none" stroke="#FFF6D2" stroke-width="3" stroke-dasharray="10 8"/><text x="280" y="510" text-anchor="middle" font-size="22" fill="#FFF6D2">上下班兩股人流都經過 ✦ 便利商店</text></g>
+  </svg>
+  <div class="card quiz-card f1" data-ia="commute"></div>
+ </div>
+</section>
+
+<!-- 扉頁 03 -->
+<section class="slide nopad" id="sec3" data-sec="03 商圈設定與立地調查" data-title="03 商圈設定與立地調查">
+ <div class="cover-img" data-bg="img/sec3-1600.webp"></div>
+ <div class="sec-in"><div class="sec-no gt">03</div><div class="sec-title">商圈設定與立地調查</div><div class="sec-script">Field Survey</div>
+  <div class="sec-list"><div><span>✦</span>整體區域潛力規劃（商圈飽和度）</div><div><span>✦</span>商圈調查方法與範圍設定</div><div><span>✦</span>商圈環境、人口與路線調查紀錄</div><div><span>✦</span>立地評估調查與流量調查</div></div></div>
+</section>
+
+<!-- IRS -->
+<section class="slide" data-sec="03 商圈設定與立地調查" data-title="整體區域潛力規劃：商圈飽和度 IRS">
+ <div class="hd"><div class="kicker">5.4 · Trade Area Setting (1)</div><h2 class="gt">整體區域潛力規劃</h2><div class="script">Saturation Index</div></div>
+ <div class="row mid" style="gap:60px">
+  <div class="box-gold c" style="padding:44px 56px">
+   <div class="gt" style="font-size:30px;font-weight:700;letter-spacing:.2em;margin-bottom:20px">商圈飽和度分析</div>
+   <div class="fx" style="font-size:64px"><i>IRS</i> ＝ <span class="frac"><span><i>C</i> × <i>E</i></span><span><i>SP</i></span></span></div>
+  </div>
+  <div class="tiles f1">
+   <div class="tile"><span class="bub" style="font-size:22px">C</span><span>人口、戶數</span></div>
+   <div class="tile"><span class="bub" style="font-size:22px">E</span><span>消費力</span></div>
+   <div class="tile"><span class="bub" style="font-size:20px">SP</span><span>競合店總數</span></div>
+   <div class="tile" style="border-color:var(--gold)"><span class="bub" style="font-size:17px">IRS</span><span>商圈飽和度分析：數值越高，表示每家店分到的消費力越多、商圈越不飽和</span></div>
+  </div>
+ </div>
+</section>
+
+<!-- 互動：IRS -->
+<section class="slide ia" data-sec="03 商圈設定與立地調查" data-title="互動：哪個商圈最不飽和？">
+ <span class="badge">INTERACTIVE</span>
+ <div class="hd"><div class="kicker">Guess, then Reveal</div><h2 class="gt">哪個商圈最不飽和？</h2><div class="script">Room to Grow</div></div>
+ <div data-ia="irs"></div>
+</section>
+
+<!-- 調查方法 -->
+<section class="slide" data-sec="03 商圈設定與立地調查" data-title="商圈調查方法">
+ <div class="hd"><div class="kicker">5.4 · Trade Area Setting (2)</div><h2 class="gt">商圈調查方法</h2><div class="script">How to Survey</div></div>
+ <div class="grid3" style="gap:24px">
+  <div class="card c"><div class="bub" style="margin:0 auto 16px">1</div><h3>地圖勘察</h3></div>
+  <div class="card c"><div class="bub" style="margin:0 auto 16px">2</div><h3>實地勘察</h3><p class="sub">觀察、記錄、拍照、攝影…</p></div>
+  <div class="card c"><div class="bub" style="margin:0 auto 16px">3</div><h3>人員訪問</h3></div>
+  <div class="card c"><div class="bub" style="margin:0 auto 16px">4</div><h3>空中觀察</h3><p class="sub">直昇機（現在也可用空拍機、衛星地圖）</p></div>
+  <div class="card c"><div class="bub" style="margin:0 auto 16px">5</div><h3>政府機關統計數據應用</h3></div>
+  <div class="card c glow"><div class="sec-script" style="font-size:56px;margin:0">Tip</div><p class="sub" style="font-size:29px">多種方法交叉比對，資料才可靠</p></div>
+ </div>
+</section>
+
+<!-- 範圍設定 -->
+<section class="slide" data-sec="03 商圈設定與立地調查" data-title="商圈範圍設定（事前）">
+ <div class="hd"><div class="kicker">5.4 · Trade Area Setting (3)</div><h2 class="gt">商圈範圍設定（事前）</h2><div class="script">Draw the Line</div></div>
+ <div class="grid2" style="gap:30px">
+  <div class="col" style="gap:22px">
+   <div class="card"><h3>物理距離 <span class="small">（郊區可擴大）</span></h3>
+    <p class="lead" style="font-size:27px">第一商圈　<input class="blank" placeholder="？"> m<br>第二商圈　<input class="blank" placeholder="？"> m</p></div>
+   <div class="card"><h3>交通工具到達時間 <span class="small">（郊區可擴大）</span></h3>
+    <div class="row mid" style="gap:20px"><p class="lead" style="font-size:27px">步　行　<input class="blank" placeholder="？"> 分鐘<br>腳踏車　<input class="blank" placeholder="？"> 分鐘<br>汽機車　<input class="blank" placeholder="？"> 分鐘</p>
+     <span style="font-size:90px;color:var(--gold2);font-weight:200;line-height:1">}</span><span class="sub">依路況<br>調整</span></div></div>
+  </div>
+  <div class="col" style="gap:22px">
+   <div class="card"><h3>商圈環境阻隔設定</h3><p class="sub" style="font-size:28px">河流、橋樑、大馬路、鐵道、地下道、天橋、大型工廠、軍事設施…</p></div>
+   <div class="card"><h3>競合店影響</h3><p class="sub" style="font-size:28px">距離、商品力、販賣力、服務力…</p></div>
+   <div class="card glow"><p class="small" style="font-size:23px">✎ 空格可以直接在畫面上輸入：請同學依你家附近的商店，討論合理的距離與時間。</p></div>
+  </div>
+ </div>
+</section>
+
+<!-- 商圈環境調查分析 -->
+<section class="slide" data-sec="03 商圈設定與立地調查" data-title="商圈環境調查分析">
+ <div class="hd"><div class="kicker">5.4 · Trade Area Setting (4)</div><h2 class="gt">商圈環境調查分析</h2><div class="script">Read the Area</div></div>
+ <div class="grid2" style="gap:16px 30px">
+  <div class="tile"><span class="bub sm">1</span><span><b class="hl">性質</b>：商業區、辦公區、住宅區、工業區、文教區</span></div>
+  <div class="tile"><span class="bub sm">5</span><span><b class="hl">大型商業設施（磁場）</b>：購物中心、百貨公司、電影院、市場</span></div>
+  <div class="tile"><span class="bub sm">2</span><span><b class="hl">同業</b>：距離、賣場規模、營業額、競爭力</span></div>
+  <div class="tile"><span class="bub sm">6</span><span><b class="hl">商圈成長性</b></span></div>
+  <div class="tile"><span class="bub sm">3</span><span><b class="hl">異業</b>：業種別、數量、關連性、商店集中度</span></div>
+  <div class="tile"><span class="bub sm">7</span><span><b class="hl">住宅開發趨勢</b></span></div>
+  <div class="tile"><span class="bub sm">4</span><span><b class="hl">公共或休閒設施（磁場）</b>：學校、醫院、火車站、飛機場、轉運站、公園、運動場、寺廟、教堂</span></div>
+  <div class="tile"><span class="bub sm">8</span><span><b class="hl">都市計劃</b>：商圈變動、道路拓寬、車輛路線改變</span></div>
+ </div>
+</section>
+
+<!-- 商圈內人口 -->
+<section class="slide" data-sec="03 商圈設定與立地調查" data-title="商圈內人口">
+ <div class="hd"><div class="kicker">5.4 · Trade Area Setting (5)</div><h2 class="gt">商圈內人口</h2><div class="script">Who Lives Here</div></div>
+ <div class="grid3" style="gap:24px">
+  <div class="card c"><div class="bub" style="margin:0 auto 14px">1</div><p class="lead" style="font-size:27px">人口數、家庭戶數<br>戶量及成長率</p></div>
+  <div class="card c"><div class="bub" style="margin:0 auto 14px">2</div><p class="lead" style="font-size:27px">年齡分析</p></div>
+  <div class="card c"><div class="bub" style="margin:0 auto 14px">3</div><p class="lead" style="font-size:27px">家庭生命週期</p></div>
+  <div class="card c"><div class="bub" style="margin:0 auto 14px">4</div><p class="lead" style="font-size:27px">所得收入</p></div>
+  <div class="card c"><div class="bub" style="margin:0 auto 14px">5</div><p class="lead" style="font-size:27px">消費習性</p></div>
+  <div class="card c"><div class="bub" style="margin:0 auto 14px">6</div><p class="lead" style="font-size:27px">使用交通工具</p></div>
+ </div>
+</section>
+
+<!-- 路線調查紀錄表（單號／雙號） -->
+<section class="slide" data-sec="03 商圈設定與立地調查" data-title="商圈路線開發調查紀錄表（單號／雙號）">
+ <div class="hd"><div class="kicker">Route Survey Form</div><h2 class="gt">商圈路線開發調查紀錄表</h2><div class="script">Fill It In</div></div>
+ <div class="row" style="gap:16px">
+  <div class="col mid" style="width:70px;gap:10px;justify-content:center">
+   <button class="chip sel" data-side="單" style="writing-mode:vertical-rl;padding:16px 8px">單號路段</button>
+   <button class="chip" data-side="雙" style="writing-mode:vertical-rl;padding:16px 8px">雙號路段</button>
+  </div>
+  <table class="form f1">
+   <tr><td class="k">路線名稱</td><td colspan="2"><input class="blank" style="width:180px"></td><td class="k">調查人</td><td colspan="2"><input class="blank" style="width:150px"></td><td class="k">調查日期</td><td colspan="3"><input class="blank" style="width:150px"></td></tr>
+   <tr><td class="k">道路寬度</td><td><input class="blank" style="width:50px"> m</td><td class="k">安全島</td><td><span class="ck">有</span><span class="ck">無</span></td><td class="k">行人地下道</td><td><span class="ck">有</span><span class="ck">無</span></td><td class="k">行人天橋</td><td colspan="3"><span class="ck">有</span><span class="ck">無</span></td></tr>
+   <tr><td class="k" colspan="10" style="text-align:center;letter-spacing:1em">商店型態</td></tr>
+   <tr><td class="k">主要大型<br>機構單位</td><td colspan="5"><input class="blank" style="width:420px"></td><td class="k">商店街<br>集客力</td><td colspan="3"><span class="ck">繁榮</span><span class="ck">普通</span><span class="ck">冷清</span></td></tr>
+   <tbody data-o="stores"></tbody>
+  </table>
+ </div>
+</section>
+
+<!-- 路線調查紀錄表（租售／挖店） -->
+<section class="slide" data-sec="03 商圈設定與立地調查" data-title="商圈路線開發調查紀錄表（租售與挖店對象）">
+ <div class="hd"><div class="kicker">Route Survey Form</div><h2 class="gt">紀錄表：租售與挖店對象</h2><div class="script">Spot the Chance</div></div>
+ <table class="form" style="font-size:20px">
+  <tr><td class="k" style="width:120px">租或售</td><td class="k">店址</td><td class="k" style="width:220px">連絡電話</td><td class="k" style="width:180px">連絡人</td></tr>
+  <tr><td><span class="ck">租</span><span class="ck">售</span></td><td></td><td></td><td></td></tr>
+  <tr><td><span class="ck">租</span><span class="ck">售</span></td><td></td><td></td><td></td></tr>
+  <tr><td><span class="ck">租</span><span class="ck">售</span></td><td></td><td></td><td></td></tr>
+  <tr><td class="k" rowspan="5" style="text-align:center">挖店<br>對象</td><td class="k">店址</td><td class="k">連絡電話</td><td class="k">連絡人</td></tr>
+  <tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr>
+  <tr><td colspan="4" style="height:150px;text-align:center;color:var(--champ3);font-size:24px;letter-spacing:.5em">街景照片</td></tr>
+ </table>
+</section>
+
+<!-- 超市適合業種 -->
+<section class="slide" data-sec="03 商圈設定與立地調查" data-title="超級市場適合之業種業態（釋例）">
+ <div class="hd"><div class="kicker">Example · Supermarket</div><h2 class="gt">超級市場適合之業種業態</h2><div class="script">Good Neighbors</div></div>
+ <table class="tb cmp" style="font-size:28px">
+  <tr><th style="width:60px"></th><th style="color:var(--ok)">✦ 最適合之業種業態</th><th>✦ 可結合業種業態</th><th style="color:var(--bad)">✦ 不適合業種業態</th></tr>
+  <tr><td>1</td><td>餐飲業（中、西式速食、小吃…）</td><td>玩具店</td><td>特種營業</td></tr>
+  <tr><td>2</td><td>烘焙麵包店</td><td>成衣服飾</td><td>電動玩具店</td></tr>
+  <tr><td>3</td><td>咖啡店</td><td>3C 家電</td><td>銀行</td></tr>
+  <tr><td>4</td><td>藥妝、西藥房</td><td>寵物店</td><td>銀樓</td></tr>
+  <tr><td>5</td><td>花店</td><td>照相館</td><td>家具店</td></tr>
+  <tr><td>6</td><td>洗衣店</td><td>書局</td><td>汽車、機車販賣</td></tr>
+  <tr><td>7</td><td>美髮美容院</td><td>禮品店</td><td>汽車、機車維修</td></tr>
+  <tr><td>8</td><td></td><td>鐘錶眼鏡行</td><td></td></tr>
+ </table>
+</section>
+
+<!-- 信義商圈 -->
+<section class="slide" data-sec="03 商圈設定與立地調查" data-title="案例：台北市信義商圈地圖與百貨公司一覽">
+ <div class="hd"><div class="kicker">Case · Xinyi District</div><h2 class="gt">案例：台北市信義商圈</h2><div class="script">A Golden Cluster</div></div>
+ <div class="row" style="gap:30px;align-items:flex-start">
+  <div style="flex:1.15"><div class="fig zoomable" style="height:530px"><img data-src="img/ch05-s24-1-1400.webp" alt="台北市信義商圈地圖"></div><div class="figcap">台北市信義商圈地圖（點圖放大）</div></div>
+  <div style="flex:1"><div class="fig zoomable" style="height:340px"><img data-src="img/ch05-s25-1-1400.webp" alt="台北信義計畫區百貨公司一覽表"></div><div class="figcap">台北信義計畫區百貨公司一覽表</div>
+   <div class="card mt" style="padding:18px 22px"><p class="small" style="font-size:26px;color:var(--champ)">觀察：十幾家百貨、購物中心集中在同一區——這是「互斥力」還是「互吸力」？</p></div></div>
+ </div>
+</section>
+
+<!-- 立地評估調查 -->
+<section class="slide" data-sec="03 商圈設定與立地調查" data-title="立地評估調查">
+ <div class="hd"><div class="kicker">5.5 · Site Evaluation</div><h2 class="gt">立地評估調查</h2><div class="script">The Exact Spot</div></div>
+ <div class="grid4" style="gap:16px">
+  <div class="tile"><span class="bub sm">1</span>流量、流向</div><div class="tile"><span class="bub sm">2</span>街道形式</div><div class="tile"><span class="bub sm">3</span>街道寬度</div><div class="tile"><span class="bub sm">4</span>位置、方向</div>
+  <div class="tile"><span class="bub sm">5</span>停車方便性</div><div class="tile"><span class="bub sm">6</span>大眾運輸工具近便性</div><div class="tile"><span class="bub sm">7</span>通行阻隔</div><div class="tile"><span class="bub sm">8</span>建築物年齡、型態</div>
+  <div class="tile"><span class="bub sm">9</span>店舖格局、面寬、坪數</div><div class="tile"><span class="bub sm" style="font-size:16px">10</span>招牌、店舖明顯度</div><div class="tile"><span class="bub sm" style="font-size:16px">11</span>鄰近業種、業態</div>
+  <div class="tile" style="border-color:var(--gold);background:rgba(255,215,0,.1)"><span class="sec-script" style="font-size:36px;margin:0">Check!</span>逐項打分</div>
+ </div>
+</section>
+
+<!-- 流量調查表 -->
+<section class="slide" data-sec="03 商圈設定與立地調查" data-title="行人流量調查表與交通工具流量調查表">
+ <div class="hd"><div class="kicker">Traffic Survey Forms</div><h2 class="gt">流量調查表</h2><div class="script">Count Them All</div></div>
+ <div class="row" style="gap:44px;align-items:flex-start;justify-content:center">
+  <div style="width:640px"><div class="tcap">行人流量調查表</div>
+   <table class="form tight"><tr><td class="k">調查地點</td><td></td><td class="k">日期</td><td></td><td class="k">星期</td><td></td><td class="k">天氣</td><td></td></tr></table>
+   <table class="form tight" style="margin-top:6px"><tr><td class="k">時間段</td><td class="k">通行量</td><td class="k">通行主體</td><td class="k" style="width:210px">備註</td></tr>
+    <tr><td>09:00–10:00</td><td></td><td></td><td rowspan="13" style="vertical-align:top;font-size:16px;line-height:1.6;color:var(--champ)">1. 通行者主體可概分：<br>A：家庭主婦<br>B：職業婦女<br>C：上班族男性<br>D：工廠員工<br>E：學生（高中及以上）<br>F：學生（高中以下）<br>2. 通行者主體之描述填上類別代號即可</td></tr>
+    <tr><td>10:00–11:00</td><td></td><td></td></tr><tr><td>11:00–12:00</td><td></td><td></td></tr><tr><td>12:00–13:00</td><td></td><td></td></tr><tr><td>13:00–14:00</td><td></td><td></td></tr><tr><td>14:00–15:00</td><td></td><td></td></tr><tr><td>15:00–16:00</td><td></td><td></td></tr><tr><td>16:00–17:00</td><td></td><td></td></tr><tr><td>17:00–18:00</td><td></td><td></td></tr><tr><td>18:00–19:00</td><td></td><td></td></tr><tr><td>19:00–20:00</td><td></td><td></td></tr><tr><td>20:00–21:00</td><td></td><td></td></tr><tr><td>21:00–22:00</td><td></td><td></td></tr>
+    <tr><td class="k">合　計</td><td></td><td></td><td></td></tr></table></div>
+  <div style="width:560px"><div class="tcap">各種交通工具流量調查表</div>
+   <table class="form tight"><tr><td class="k">調查地點</td><td></td><td class="k">日期</td><td></td><td class="k">星期</td><td></td><td class="k">天氣</td><td></td></tr></table>
+   <table class="form tight" style="margin-top:6px"><tr><td class="k">時間段</td><td class="k">機車</td><td class="k">小汽車</td><td class="k">大汽車</td></tr>
+    <tr><td>09:00–10:00</td><td></td><td></td><td></td></tr><tr><td>10:00–11:00</td><td></td><td></td><td></td></tr><tr><td>11:00–12:00</td><td></td><td></td><td></td></tr><tr><td>12:00–13:00</td><td></td><td></td><td></td></tr><tr><td>13:00–14:00</td><td></td><td></td><td></td></tr><tr><td>14:00–15:00</td><td></td><td></td><td></td></tr><tr><td>15:00–16:00</td><td></td><td></td><td></td></tr><tr><td>16:00–17:00</td><td></td><td></td><td></td></tr><tr><td>17:00–18:00</td><td></td><td></td><td></td></tr><tr><td>18:00–19:00</td><td></td><td></td><td></td></tr><tr><td>19:00–20:00</td><td></td><td></td><td></td></tr><tr><td>20:00–21:00</td><td></td><td></td><td></td></tr><tr><td>21:00–22:00</td><td></td><td></td><td></td></tr>
+    <tr><td class="k">合　計</td><td></td><td></td><td></td></tr></table></div>
+ </div>
+ <p class="small c" style="margin-top:16px;font-size:22px">兩張表都另附「流向圖」欄位與「調查人」簽名；下一頁有可以帶到現場的電子計數器。</p>
+</section>
+
+<!-- 互動：流量計數器 -->
+<section class="slide ia" data-sec="03 商圈設定與立地調查" data-title="互動：流量調查計數器">
+ <span class="badge">INTERACTIVE</span>
+ <div class="hd"><div class="kicker">Field Clicker</div><h2 class="gt">流量調查計數器</h2><div class="script">Tap &amp; Count</div></div>
+ <div data-ia="counter"></div>
+</section>
+
+<!-- 店舖格局＋投票 -->
+<section class="slide ia" data-sec="03 商圈設定與立地調查" data-title="店舖格局示意圖（投票：選哪種門面？）">
+ <span class="badge">INTERACTIVE</span>
+ <div class="hd"><div class="kicker">Store Layout</div><h2 class="gt">店舖格局示意圖</h2><div class="script">Pick a Facade</div></div>
+ <div class="row" style="gap:44px">
+  <svg viewBox="0 0 640 520" style="width:640px;height:520px;flex:none">
+   <line x1="10" y1="470" x2="630" y2="470" stroke="#D4AF37" stroke-width="3"/><text x="320" y="508" text-anchor="middle" font-size="22" fill="#F4B9A6">← 店門口面對的街道 →</text>
+   <rect x="20" y="230" width="200" height="200" rx="14" fill="rgba(255,215,0,.12)" stroke="#FFD700" stroke-width="2.5" filter="url(#gf)"/><text x="120" y="340" text-anchor="middle" font-size="32" font-weight="700" fill="#FFD700">A</text><text x="120" y="455" text-anchor="middle" font-size="20">方正</text>
+   <rect x="270" y="50" width="100" height="380" rx="14" fill="rgba(255,215,0,.12)" stroke="#FFD700" stroke-width="2.5" filter="url(#gf)"/><text x="320" y="250" text-anchor="middle" font-size="32" font-weight="700" fill="#FFD700">B</text><text x="320" y="455" text-anchor="middle" font-size="20">窄而深</text>
+   <rect x="410" y="330" width="210" height="100" rx="14" fill="rgba(255,215,0,.12)" stroke="#FFD700" stroke-width="2.5" filter="url(#gf)"/><text x="515" y="392" text-anchor="middle" font-size="32" font-weight="700" fill="#FFD700">C</text><text x="515" y="455" text-anchor="middle" font-size="20">寬而淺</text>
+  </svg>
+  <div class="f1 col" style="gap:20px"><div data-ia="facade"></div>
+   <div class="card" style="padding:16px 22px"><p class="small" style="font-size:25px;color:var(--champ)">討論：面寬影響招牌與<span class="hl">店舖明顯度</span>，縱深影響陳列與動線。不同業態（便利商店、服飾店、餐廳）答案會一樣嗎？</p></div></div>
+ </div>
+</section>
+
+<!-- 扉頁 04 -->
+<section class="slide nopad" id="sec4" data-sec="04 立地理論與銷售預估" data-title="04 立地理論與銷售額預估">
+ <div class="cover-img" data-bg="img/sec4-1600.webp"></div>
+ <div class="sec-in"><div class="sec-no gt">04</div><div class="sec-title">立地理論與銷售額預估</div><div class="sec-script">Location Theories</div>
+  <div class="sec-list"><div><span>✦</span>簡易立地評估理論：地心引力、三角窗、漏斗、大數法則</div><div><span>✦</span>Reilly 吸引力法則</div><div><span>✦</span>Huff 吸引力法則</div><div><span>✦</span>迴歸分析法與類比法</div></div></div>
+</section>
+
+<!-- 四個簡易理論 -->
+<section class="slide" data-sec="04 立地理論與銷售預估" data-title="簡易立地評估理論總覽">
+ <div class="hd"><div class="kicker">5.6 · Simple Theories</div><h2 class="gt">簡易立地評估理論</h2><div class="script">Four Rules of Thumb</div></div>
+ <div class="grid4" style="gap:22px">
+  <div class="card c"><div class="bub" style="margin:0 auto 14px">1</div><h3>地心引力理論</h3><p class="sub">月亮與星星：大磁場吸引周邊小店</p></div>
+  <div class="card c"><div class="bub" style="margin:0 auto 14px">2</div><h3>迴轉三角窗理論</h3><p class="sub">又稱三角理論：路口轉角的店位選擇</p></div>
+  <div class="card c"><div class="bub" style="margin:0 auto 14px">3</div><h3>漏斗理論</h3><p class="sub">住宅區的人流像漏斗一樣，匯集到出口</p></div>
+  <div class="card c"><div class="bub" style="margin:0 auto 14px">4</div><h3>統計推論</h3><p class="sub">大數法則：<br>成功／失敗法則</p></div>
+ </div>
+</section>
+
+<!-- 地心引力 -->
+<section class="slide" data-sec="04 立地理論與銷售預估" data-title="地心引力理論（月亮與星星）與釋例">
+ <div class="hd"><div class="kicker">5.6 · Theory (1)</div><h2 class="gt">地心引力理論</h2><div class="script">The Moon &amp; the Stars</div></div>
+ <div class="row mid" style="gap:40px">
+  <svg viewBox="0 0 560 560" style="width:560px;height:560px;flex:none">
+   <g stroke="#D4AF37" stroke-width="2" marker-end="url(#ar)" fill="none">
+    <line x1="280" y1="20" x2="280" y2="160"/><line x1="280" y1="540" x2="280" y2="400"/><line x1="20" y1="280" x2="160" y2="280"/><line x1="540" y1="280" x2="400" y2="280"/>
+    <line x1="96" y1="96" x2="190" y2="190"/><line x1="464" y1="96" x2="370" y2="190"/><line x1="96" y1="464" x2="190" y2="370"/><line x1="464" y1="464" x2="370" y2="370"/>
+    <line x1="170" y1="40" x2="232" y2="168"/><line x1="390" y1="40" x2="328" y2="168"/><line x1="170" y1="520" x2="232" y2="392"/><line x1="390" y1="520" x2="328" y2="392"/>
+    <line x1="40" y1="170" x2="168" y2="232"/><line x1="40" y1="390" x2="168" y2="328"/><line x1="520" y1="170" x2="392" y2="232"/><line x1="520" y1="390" x2="392" y2="328"/>
+   </g>
+   <circle cx="280" cy="280" r="110" fill="url(#pearl)" filter="url(#gf)"/>
+   <text x="280" y="272" text-anchor="middle" font-size="34" font-weight="900" fill="#241703">磁場</text><text x="280" y="310" text-anchor="middle" font-size="20" fill="#3a2a08">月亮</text>
+  </svg>
+  <div class="f1 col" style="gap:14px">
+   <div class="tcap">釋例：磁場 ➝ 被吸引而來的店（星星）</div>
+   <div class="tile"><b class="hl" style="min-width:110px">醫　院</b>診所、藥房、便利商店、鮮花、水果、餐廳、速食業…</div>
+   <div class="tile"><b class="hl" style="min-width:110px">學　校</b>書局、文具店、電動玩具、餐廳、運動鞋、眼鏡…</div>
+   <div class="tile"><b class="hl" style="min-width:110px">公　園</b>書局、速食、咖啡、冷飲…</div>
+   <div class="tile"><b class="hl" style="min-width:110px">戲　院</b>速食、餐廳、咖啡、冷飲、便利商店、遊樂場所（如：電玩）…</div>
+   <div class="tile"><b class="hl" style="min-width:110px">電信局</b>通信器材…</div>
+  </div>
+ </div>
+</section>
+
+<!-- 互動：磁場配對 -->
+<section class="slide ia" data-sec="04 立地理論與銷售預估" data-title="互動：誰會被哪個磁場吸過來？">
+ <span class="badge">INTERACTIVE</span>
+ <div class="hd"><div class="kicker">Find the Magnet</div><h2 class="gt">誰會被哪個磁場吸過來？</h2><div class="script">Moons &amp; Stars</div></div>
+ <div data-ia="magnet" class="compact"></div>
+</section>
+
+<!-- 三角窗＋投票 -->
+<section class="slide ia" data-sec="04 立地理論與銷售預估" data-title="迴轉三角窗理論（投票：選哪個店位？）">
+ <span class="badge">INTERACTIVE</span>
+ <div class="hd"><div class="kicker">5.6 · Theory (2)</div><h2 class="gt">迴轉三角窗理論</h2><div class="script">Corner Sites</div></div>
+ <div class="row" style="gap:40px">
+  <svg viewBox="0 0 600 560" style="width:600px;height:560px;flex:none">
+   <rect x="0" y="0" width="600" height="560" rx="26" fill="rgba(255,255,255,.02)"/>
+   <g stroke="#D4AF37" stroke-width="4" fill="none">
+    <path d="M30,220 H250 V20"/><path d="M350,20 V220 H570"/><path d="M30,320 H250 V540"/><path d="M350,540 V320 H570"/>
+   </g>
+   <line x1="300" y1="30" x2="300" y2="530" stroke="rgba(247,231,206,.35)" stroke-width="2" stroke-dasharray="16 12"/>
+   <line x1="40" y1="270" x2="560" y2="270" stroke="rgba(247,231,206,.35)" stroke-width="2" stroke-dasharray="16 12"/>
+   <path d="M325,40 V250 Q325,295 280,295 H60" stroke="#FFD700" stroke-width="4" fill="none" marker-end="url(#ar)" filter="url(#gf)"/>
+   <path d="M325,250 V520" stroke="#FFD700" stroke-width="4" fill="none" marker-end="url(#ar)" opacity=".6"/>
+   <g text-anchor="middle" font-size="28" font-weight="700">
+    <rect x="130" y="140" width="110" height="70" rx="12" fill="rgba(255,215,0,.16)" stroke="#FFD700"/><text x="185" y="185" fill="#FFD700">A 店</text>
+    <rect x="130" y="330" width="110" height="70" rx="12" fill="rgba(255,215,0,.16)" stroke="#FFD700"/><text x="185" y="375" fill="#FFD700">B 店</text>
+    <rect x="360" y="330" width="110" height="70" rx="12" fill="rgba(255,215,0,.16)" stroke="#FFD700"/><text x="415" y="375" fill="#FFD700">C 店</text>
+   </g>
+   <g font-family="Playfair Display" font-size="20" fill="#F4B9A6" text-anchor="middle"><text x="130" y="110">FAR CORNER</text><text x="130" y="440">NEAR CORNER</text><text x="470" y="440">FAR CORNER</text></g>
+   <text x="460" y="120" font-size="19" fill="rgba(247,231,206,.7)" text-anchor="middle">車流由上往下</text><text x="460" y="146" font-size="19" fill="rgba(247,231,206,.7)" text-anchor="middle">直行或左轉</text>
+  </svg>
+  <div class="f1 col" style="gap:18px"><div data-ia="corner"></div>
+   <div class="card" style="padding:16px 22px"><p class="small" style="font-size:26px;color:var(--champ)">想一想：車子在路口前後，哪一個轉角<span class="hl">最容易被看到</span>、<span class="hl">最方便停車進店</span>？</p></div></div>
+ </div>
+</section>
+
+<!-- 漏斗理論 -->
+<section class="slide" data-sec="04 立地理論與銷售預估" data-title="漏斗理論">
+ <div class="hd"><div class="kicker">5.6 · Theory (3)</div><h2 class="gt">漏斗理論</h2><div class="script">The Funnel</div></div>
+ <div class="row mid" style="gap:40px">
+  <svg viewBox="0 0 900 580" style="width:880px;height:567px;flex:none">
+   <!-- 上方住宅區與兩條巷道 -->
+   <g fill="rgba(255,215,0,.07)" stroke="rgba(212,175,55,.5)" stroke-width="1.5"><rect x="60" y="20" width="250" height="150" rx="18"/><rect x="560" y="20" width="280" height="150" rx="18"/></g>
+   <g stroke="#D4AF37" stroke-width="3.5" fill="none"><path d="M400,230 V20"/><path d="M460,230 V20"/></g>
+   <!-- 幹道 -->
+   <path d="M20,230 H400 M460,230 H880" stroke="#D4AF37" stroke-width="5" fill="none"/>
+   <path d="M20,330 H300 M600,330 H880" stroke="#D4AF37" stroke-width="5" fill="none"/>
+   <line x1="30" y1="280" x2="870" y2="280" stroke="rgba(247,231,206,.35)" stroke-width="2" stroke-dasharray="16 12"/>
+   <g stroke="#FFD700" stroke-width="4" marker-end="url(#ar)"><line x1="860" y1="255" x2="40" y2="255"/></g>
+   <g stroke="#5CC8FF" stroke-width="4" marker-end="url(#arb)"><line x1="40" y1="305" x2="860" y2="305"/></g>
+   <text x="560" y="216" font-size="26" fill="#FFD700" font-weight="700">← 上班（往辦公區）</text><text x="40" y="368" font-size="26" fill="#5CC8FF" font-weight="700">下班（回住宅）→</text>
+   <!-- 下方漏斗：住宅區巷道匯集到出口 -->
+   <path d="M300,330 L120,560 H780 L600,330 Z" fill="rgba(255,215,0,.08)" stroke="none"/>
+   <path d="M300,330 L120,560 M600,330 L780,560" stroke="#D4AF37" stroke-width="3.5" fill="none"/>
+   <g stroke="rgba(247,231,206,.55)" stroke-width="2.5" fill="none" marker-end="url(#ar)"><path d="M230,550 L400,350"/><path d="M450,550 V350"/><path d="M670,550 L500,350"/></g>
+   <g font-size="30" font-weight="700" fill="#FFF6D2" text-anchor="middle"><text x="185" y="110">住</text><text x="700" y="110">住</text><text x="270" y="520">住</text><text x="560" y="470">住</text><text x="650" y="525">住</text><text x="350" y="470">住</text></g>
+   <!-- 店：位在漏斗口、下班動線那一側 -->
+   <rect x="306" y="338" width="96" height="72" rx="14" fill="url(#pearl)" filter="url(#gf)"/>
+   <text x="354" y="385" font-size="32" font-weight="900" fill="#241703" text-anchor="middle">店</text>
+   <text x="450" y="575" font-size="21" fill="#F7E7CE" text-anchor="middle">住宅區的人流像漏斗一樣，匯集到出口</text>
+  </svg>
+  <div class="card f1"><h3>漏斗口就是好立地</h3><p class="sub" style="font-size:27px;line-height:1.75">住宅區的人要出門上班、回家，都得經過同一個出入口；這些人流像漏斗一樣匯集到幹道。店開在漏斗口、而且位在<span class="hl">下班回家</span>的那一側，就能接住整片住宅區的人潮。</p></div>
+ </div>
+</section>
+
+<!-- 銷售額預估方法 -->
+<section class="slide" data-sec="04 立地理論與銷售預估" data-title="統計數據分析：銷售額預估四方法">
+ <div class="hd"><div class="kicker">Sales Forecasting</div><h2 class="gt">銷售額預估的四種方法</h2><div class="script">Four Lenses</div></div>
+ <div class="grid2" style="gap:24px">
+  <div class="card"><div class="row mid" style="gap:16px"><span class="bub">1</span><div><h3 style="margin:0;font-size:36px">Reilly 吸引力法則</h3><span class="en" style="font-size:24px">Reilly Retail Gravitation Law</span></div></div></div>
+  <div class="card"><div class="row mid" style="gap:16px"><span class="bub">2</span><div><h3 style="margin:0;font-size:36px">Huff 吸引力法則</h3><span class="en" style="font-size:24px">Huff's Law of Shopper Attraction</span></div></div></div>
+  <div class="card"><div class="row mid" style="gap:16px"><span class="bub">3</span><div><h3 style="margin:0;font-size:36px">迴歸分析法</h3><span class="en" style="font-size:24px">Regression Analysis</span></div></div></div>
+  <div class="card"><div class="row mid" style="gap:16px"><span class="bub">4</span><div><h3 style="margin:0;font-size:36px">類比法</h3><span class="en" style="font-size:24px">Analog Approach</span></div></div></div>
+ </div>
+ <p class="sub c mt2" style="font-size:30px">前兩個看「城市／商店的吸引力」，後兩個看「新店能賣多少」。</p>
+</section>
+
+<!-- Reilly 定義 -->
+<section class="slide" data-sec="04 立地理論與銷售預估" data-title="Reilly 吸引力法則：定義與公式">
+ <div class="hd"><div class="kicker">Reilly Retail Gravitation Law</div><h2 class="gt">Reilly 吸引力法則</h2><div class="script">William J. Reilly, 1931</div></div>
+ <div class="row" style="gap:40px">
+  <div class="col f1" style="gap:20px">
+   <p class="lead" style="font-size:27px">由學者 William J. Reilly 在 1931 年所發展的理論：兩個城市相比，<span class="hl">越大且越有吸引力的城市</span>，將會吸引更多顧客上門。</p>
+   <div class="card glow"><p class="lead" style="font-size:26px">以<span class="hl">人口</span>和<span class="hl">距離</span>為考量因素，兩城市吸引顧客的比例與當地的人口成正比，與距離的平方成反比。</p></div>
+   <div class="card"><h3 style="font-size:24px">前提假設</h3><p class="sub">1. 兩城市的零售店經營效率相似。<br>2. 兩城市的人口分佈相似。</p></div>
+  </div>
+  <div class="col" style="width:560px;gap:20px">
+   <div class="box-gold c" style="padding:34px 20px"><div class="fx" style="font-size:44px"><span class="nv"><i>D</i><sub>ab</sub></span> ＝ <span class="frac"><span><i>d</i></span><span>1 ＋ <span class="rad"><span class="rs">√</span><span class="ri"><span class="frac"><span><span class="nv"><i>P</i><sub>b</sub></span></span><span><span class="nv"><i>P</i><sub>a</sub></span></span></span></span></span></span></span></div></div>
+   <table class="tb" style="font-size:22px">
+    <tr><td><span class="nv"><i>D</i><sub>ab</sub></span></td><td>a 城市或 b 城市的商圈範圍</td></tr>
+    <tr><td><i>d</i></td><td>a 城市和 b 城市的距離</td></tr>
+    <tr><td><span class="nv"><i>P</i><sub>a</sub></span></td><td>a 城市的人口</td></tr>
+    <tr><td><span class="nv"><i>P</i><sub>b</sub></span></td><td>b 城市的人口</td></tr></table>
+  </div>
+ </div>
+</section>
+
+<!-- Reilly 舉例 -->
+<section class="slide" data-sec="04 立地理論與銷售預估" data-title="Reilly 法則舉例：a、b 兩城市">
+ <div class="hd"><div class="kicker">Reilly · Example</div><h2 class="gt">舉例：a、b 兩城市的商圈範圍</h2><div class="script">Work It Out</div></div>
+ <p class="lead" style="font-size:34px">假設 a 城市有 <span class="hl">90,000</span> 人口，b 城市有 <span class="hl">10,000</span> 人口，a、b 兩地距離 <span class="hl">20</span> 公里，對於 a 和 b 而言商圈範圍各是多少？</p>
+ <p class="sub" style="font-size:27px;margin-top:6px">（P<sub>a</sub>＝90,000，P<sub>b</sub>＝10,000，d＝20 公里）</p>
+ <div class="row mid mt2" style="gap:50px;justify-content:center" data-ia="peek">
+  <div class="col" style="gap:30px">
+   <div class="fx" style="font-size:38px"><span class="nv"><i>D</i><sub>a</sub></span> ＝ <span class="frac"><span>20</span><span>1 ＋ <span class="rad"><span class="rs">√</span><span class="ri"><span class="frac"><span>10,000</span><span>90,000</span></span></span></span></span></span> ＝ <span class="big gt peek-hide" style="font-size:54px">15</span><span class="peek-hide hl" style="font-size:30px">公里　→ 商圈範圍大</span></div>
+   <div class="fx" style="font-size:38px"><span class="nv"><i>D</i><sub>b</sub></span> ＝ <span class="frac"><span>20</span><span>1 ＋ <span class="rad"><span class="rs">√</span><span class="ri"><span class="frac"><span>90,000</span><span>10,000</span></span></span></span></span></span> ＝ <span class="big peek-hide" style="font-size:54px;color:var(--rose)">5</span><span class="peek-hide rz" style="font-size:30px">公里　→ 商圈範圍小</span></div>
+  </div>
+  <button class="btn solid peek-btn" style="font-size:24px">先算算看，再揭曉 ✦</button>
+ </div>
+</section>
+
+<!-- 互動：Reilly 計算器 -->
+<section class="slide ia" data-sec="04 立地理論與銷售預估" data-title="互動：Reilly 商圈分界計算器">
+ <span class="badge">INTERACTIVE</span>
+ <div class="hd"><div class="kicker">Gravity Slider</div><h2 class="gt">商圈分界計算器</h2><div class="script">Move the Border</div></div>
+ <div data-ia="reilly"></div>
+</section>
+
+<!-- Reilly 限制 -->
+<section class="slide" data-sec="04 立地理論與銷售預估" data-title="Reilly 法則的理論限制">
+ <div class="hd"><div class="kicker">Reilly · Limits</div><h2 class="gt">Reilly 法則的理論限制</h2><div class="script">Not the Whole Story</div></div>
+ <div class="row mid" style="gap:50px">
+  <svg viewBox="0 0 520 380" style="width:520px;height:380px;flex:none">
+   <line x1="150" y1="250" x2="330" y2="160" stroke="#F7E7CE" stroke-width="3" marker-end="url(#ar)" marker-start="url(#ar)"/>
+   <line x1="145" y1="290" x2="320" y2="320" stroke="#F7E7CE" stroke-width="3" marker-end="url(#ar)" marker-start="url(#ar)"/>
+   <line x1="370" y1="300" x2="420" y2="210" stroke="#F7E7CE" stroke-width="3" marker-end="url(#ar)" marker-start="url(#ar)"/>
+   <circle cx="90" cy="270" r="55" fill="#FFD700" filter="url(#gf)"/><circle cx="410" cy="120" r="85" fill="#F4B9A6" opacity=".9" filter="url(#gf)"/><circle cx="350" cy="330" r="34" fill="#D4AF37"/>
+  </svg>
+  <div class="col f1" style="gap:22px">
+   <div class="card"><h3 style="font-size:34px">只考慮到距離</h3><p class="sub" style="font-size:28px">未考慮到交通流量，應以<span class="hl">交通的時間距離</span>衡量較為合適。</p></div>
+   <div class="card"><h3 style="font-size:34px">以人口數判斷較不具代表性</h3><p class="sub" style="font-size:28px">應以城市的<span class="hl">零售額</span>（Retail Sales Sum）取代之。</p></div>
+  </div>
+ </div>
+</section>
+
+<!-- Huff 定義 -->
+<section class="slide" data-sec="04 立地理論與銷售預估" data-title="Huff 吸引力法則：定義與公式">
+ <div class="hd"><div class="kicker">Huff's Law of Shopper Attraction</div><h2 class="gt">Huff 吸引力法則</h2><div class="script">Relative Attraction</div></div>
+ <div class="row" style="gap:40px">
+  <div class="col f1" style="gap:22px">
+   <p class="lead" style="font-size:31px">認為商店吸引顧客的能力取決於<span class="hl">相對吸引力</span>，包括產品特性與顧客到商店的距離。</p>
+   <div class="card glow"><h3 style="font-size:32px">模型中主要考量兩個因素</h3><ul class="sp"><li>商店的大小</li><li>到達商店所需花費的時間</li></ul></div>
+  </div>
+  <div class="col" style="width:600px;gap:18px">
+   <div class="box-gold c" style="padding:30px 20px"><div class="fx" style="font-size:42px"><span class="nv"><i>P</i><sub>ij</sub></span> ＝ <span class="frac"><span><span class="frac" style="font-size:.8em"><span><span class="nv"><i>S</i><sub>j</sub></span></span><span><span class="nv"><i>T</i><sub>ij</sub><sup>λ</sup></span></span></span></span><span>∑<sub style="font-size:.5em">j=1</sub><sup style="font-size:.5em">n</sup> <span class="frac" style="font-size:.8em"><span><span class="nv"><i>S</i><sub>j</sub></span></span><span><span class="nv"><i>T</i><sub>ij</sub><sup>λ</sup></span></span></span></span></span></div></div>
+   <table class="tb" style="font-size:23px">
+    <tr><td><span class="nv"><i>P</i><sub>ij</sub></span></td><td>在 i 地點的顧客會到 j 商店購物的機率</td></tr>
+    <tr><td><span class="nv"><i>S</i><sub>j</sub></span></td><td>j 零售店的規模</td></tr>
+    <tr><td><span class="nv"><i>T</i><sub>ij</sub></span></td><td>顧客從 i 地點到 j 商店購物之時間</td></tr>
+    <tr><td>λ</td><td>交通時間對消費者購物行為之影響</td></tr>
+    <tr><td><i>n</i></td><td>競爭店數</td></tr></table>
+  </div>
+ </div>
+</section>
+
+<!-- Huff 舉例 -->
+<section class="slide" data-sec="04 立地理論與銷售預估" data-title="Huff 法則舉例：新 j 商店的預期銷售額">
+ <div class="hd"><div class="kicker">Huff · Example</div><h2 class="gt">舉例：新開 j 商店能賣多少？</h2><div class="script">Step by Step</div></div>
+ <div class="row" style="gap:30px">
+  <table class="tb cmp" style="width:640px;font-size:25px;align-self:flex-start">
+   <tr><th>條件</th><th>舊商店</th><th>新 j 商店</th></tr>
+   <tr><td>規模</td><td>5,000 m²</td><td>10,000 m²</td></tr>
+   <tr><td>a 社區開車時間</td><td>5 分鐘</td><td>15 分鐘</td></tr>
+   <tr><td>b 社區開車時間</td><td>10 分鐘</td><td>5 分鐘</td></tr>
+   <tr><td>現有銷售額</td><td colspan="2">每年 800 萬元：a 社區 300 萬、b 社區 500 萬</td></tr>
+   <tr><td>λ 值</td><td colspan="2">2（根據過去經驗）</td></tr></table>
+  <div class="col f1" style="gap:18px">
+   <div class="card" style="padding:18px 24px"><div class="small" style="font-size:22px">a 社區居民到新商店購物的機率</div><div class="fx" style="font-size:30px"><span class="nv"><i>P</i><sub>aj</sub></span> ＝ <span class="frac"><span>10,000 ⁄ 15²</span><span>10,000 ⁄ 15² ＋ 5,000 ⁄ 5²</span></span> ＝ <b class="hl">0.182</b></div></div>
+   <div class="card" style="padding:18px 24px"><div class="small" style="font-size:22px">b 社區居民到新商店購物的機率</div><div class="fx" style="font-size:30px"><span class="nv"><i>P</i><sub>bj</sub></span> ＝ <span class="frac"><span>10,000 ⁄ 5²</span><span>10,000 ⁄ 5² ＋ 5,000 ⁄ 10²</span></span> ＝ <b class="hl">0.889</b></div></div>
+  </div>
+ </div>
+ <div class="box-gold mt c" style="font-size:28px">新立地（j 商店）的預期銷售額：0.182 × 3,000,000 ＋ 0.889 × 5,000,000 ＝ <b class="gt" style="font-size:36px">4,991,000 元</b></div>
+</section>
+
+<!-- 互動：Huff 練習 -->
+<section class="slide ia" data-sec="04 立地理論與銷售預估" data-title="互動：請各位同學分析（Huff 練習）">
+ <span class="badge">INTERACTIVE</span>
+ <div class="hd"><div class="kicker">Your Turn · Huff</div><h2 class="gt">請各位同學分析</h2><div class="script">Calculate &amp; Toast</div></div>
+ <div class="row" style="gap:30px">
+  <div class="card" style="width:600px;padding:22px 26px">
+   <p class="sub" style="font-size:24px;line-height:1.65">某城市有 A、B 兩大社區，目前有一家 <b class="hl">8,000 m²</b> 的舊 R 超市，年營業額 <b class="hl">1,000 萬</b>：600 萬來自 A 社區、400 萬來自 B 社區。A 社區居民開車到 R 平均 <b class="hl">10 分鐘</b>、B 社區 <b class="hl">30 分鐘</b>。</p>
+   <p class="sub mt" style="font-size:24px;line-height:1.65">競爭對手考慮另開一間 <b class="hl">10,000 m²</b> 的新 Q 超市：A 社區開車到 Q 平均 <b class="hl">30 分鐘</b>、B 社區 <b class="hl">15 分鐘</b>；交通時間影響值 λ＝<b class="hl">3</b>。</p>
+   <p class="small mt" style="font-size:22px;color:var(--champ)">請用 Huff 法則算出 A、B 社區居民到 Q 購物的機率，以及 Q 的預期營業額。</p>
+  </div>
+  <div class="card quiz-card f1" data-ia="huff"></div>
+ </div>
+</section>
+
+<!-- 迴歸分析法 -->
+<section class="slide" data-sec="04 立地理論與銷售預估" data-title="迴歸分析法">
+ <div class="hd"><div class="kicker">Regression Analysis</div><h2 class="gt">迴歸分析法</h2><div class="script">Many Factors at Once</div></div>
+ <p class="lead" style="font-size:34px">利用迴歸分析法中<span class="hl">複迴歸</span>的技術，衡量預測新商店的銷售額。</p>
+ <div class="row mid mt2" style="justify-content:center;gap:30px">
+  <div class="col" style="gap:14px;align-items:flex-end"><div class="chip" style="font-size:30px">能見度</div><div class="chip" style="font-size:30px">易接近性</div></div>
+  <div class="bub" style="width:180px;height:180px;font-size:40px;font-family:var(--serif);line-height:1.2;text-align:center">位置<br>特性</div>
+  <span class="gt" style="font-size:80px;font-weight:200">＋</span>
+  <div class="bub" style="width:180px;height:180px;font-size:40px;font-family:var(--serif);line-height:1.2;text-align:center;background:radial-gradient(circle at 35% 30%,#FFF1EC,#F4B9A6 50%,#B5715E)">商圈<br>特性</div>
+  <div class="col" style="gap:14px"><div class="chip" style="font-size:30px">生活型態</div><div class="chip" style="font-size:30px">人口統計資料</div></div>
+  <span class="gt" style="font-size:80px;font-weight:200">→</span>
+  <div class="box-gold c" style="font-size:40px;font-weight:900">預期<br>銷售額</div>
+ </div>
+</section>
+
+<!-- 迴歸舉例 -->
+<section class="slide" data-sec="04 立地理論與銷售預估" data-title="迴歸分析法舉例：各因素的權數">
+ <div class="hd"><div class="kicker">Regression · Example</div><h2 class="gt">舉例：各因素的權數</h2><div class="script">Weights Matter</div></div>
+ <p class="sub" style="font-size:30px;line-height:1.7">一間商店已經分析了所有可能會影響現有商店銷售額的因素，得出各因素的權數，預期商品銷售額的計算方式如下：</p>
+ <div class="box-gold mt" style="padding:26px 34px">
+  <div class="fx" style="font-size:30px;flex-wrap:wrap;line-height:2;font-family:var(--serif)"><b class="hl">預期銷售額</b> ＝ 300 × 家庭數</div>
+  <div style="font-size:28px;line-height:2;padding-left:150px">＋ 500,000 × 商圈中有未滿 15 歲子女的家庭比例<br>＋ 800,000 × 商圈中具有抱負青年的家庭比例<br>＋ 100,000（從街道上能清楚看到商店）<br>＋ 200,000（商店裡面有專業的服務人員）</div>
+ </div>
+</section>
+
+<!-- 互動：立地 A、B -->
+<section class="slide ia" data-sec="04 立地理論與銷售預估" data-title="迴歸分析法：立地 A 與立地 B 哪個好？">
+ <span class="badge">INTERACTIVE</span>
+ <div class="hd"><div class="kicker">Regression · Site A vs B</div><h2 class="gt">立地 A 與立地 B，哪個賣得多？</h2><div class="script">Guess First</div></div>
+ <div class="row" style="gap:30px">
+  <div class="col" style="width:680px;gap:12px">
+   <div class="tcap" style="font-size:26px">立地 A 和立地 B 之考慮因素</div>
+   <table class="tb cmp" style="font-size:25px"><tr><th>考慮因素</th><th>立地 A</th><th>立地 B</th></tr>
+    <tr><td>車程在 15 分鐘內的家庭戶數</td><td>10,000</td><td>13,000</td></tr>
+    <tr><td>有未滿 15 歲子女的家庭比例</td><td>60%</td><td>20%</td></tr>
+    <tr><td>有抱負青年的家庭比例</td><td>50%</td><td>10%</td></tr>
+    <tr><td>從街道上能清楚看到商店</td><td>是</td><td>否</td></tr>
+    <tr><td>商店裡面有專業的服務人員</td><td>是</td><td>否</td></tr></table>
+   <div class="small" data-o="regcalc" style="font-size:21px;line-height:1.7;visibility:hidden">立地 A＝300×10,000＋500,000×0.6＋800,000×0.5＋100,000＋200,000＝4,000,000<br>立地 B＝300×13,000＋500,000×0.2＋800,000×0.1＝4,080,000</div>
+  </div>
+  <div class="card quiz-card f1" data-ia="regab"></div>
+ </div>
+</section>
+
+<!-- 互動：立地 C -->
+<section class="slide ia" data-sec="04 立地理論與銷售預估" data-title="互動：你來試算立地 C">
+ <span class="badge">INTERACTIVE</span>
+ <div class="hd"><div class="kicker">Build Your Site</div><h2 class="gt">你來試算立地 C</h2><div class="script">Beat Site B</div></div>
+ <div data-ia="regc"></div>
+</section>
+
+<!-- 扉頁 05 -->
+<section class="slide nopad" id="sec5" data-sec="05 競合、投資與開店後評估" data-title="05 競合、投資與開店後評估">
+ <div class="cover-img" data-bg="img/sec5-1600.webp"></div>
+ <div class="sec-in"><div class="sec-no gt">05</div><div class="sec-title">競合、投資與開店後評估</div><div class="sec-script">Invest &amp; Review</div>
+  <div class="sec-list"><div><span>✦</span>競合店調查</div><div><span>✦</span>開店投資評估與效率分析（損益平衡點）</div><div><span>✦</span>開店後五年損益預估</div><div><span>✦</span>開店後評估：地圖插針法、交易客數驗證</div></div></div>
+</section>
+
+<!-- 競合店調查 -->
+<section class="slide" data-sec="05 競合、投資與開店後評估" data-title="競合店調查">
+ <div class="hd"><div class="kicker">5.7 · Competitor Survey</div><h2 class="gt">競合店調查</h2><div class="script">Know Your Rivals</div></div>
+ <div class="row mid" style="gap:22px;justify-content:center">
+  <div class="card c" style="width:262px;padding:30px 16px"><div class="bub" style="margin:0 auto 16px">1</div><p class="lead" style="font-size:31px">流量與<br>入店率調查</p></div>
+  <div class="card c" style="width:262px;padding:30px 16px"><div class="bub" style="margin:0 auto 16px">2</div><p class="lead" style="font-size:31px">立地條件<br>比較</p></div>
+  <div class="card c" style="width:262px;padding:30px 16px"><div class="bub" style="margin:0 auto 16px">3</div><p class="lead" style="font-size:31px">客層分析</p></div>
+  <div class="card c" style="width:262px;padding:30px 16px"><div class="bub" style="margin:0 auto 16px">4</div><p class="lead" style="font-size:31px">服務水準</p></div>
+  <div class="card c glow" style="width:262px;padding:30px 16px"><div class="bub" style="margin:0 auto 16px">5</div><p class="lead" style="font-size:31px">營業額推估</p></div>
+ </div>
+ <p class="sub c mt2" style="font-size:29px">還記得「來客數三槓桿」嗎？競合店的<span class="hl">流量 × 入店率 × 成交率 × 客單價</span>，就是推估它營業額的起點。</p>
+</section>
+
+<!-- 投資評估 BEP -->
+<section class="slide" data-sec="05 競合、投資與開店後評估" data-title="開店投資評估與效率分析：損益平衡點">
+ <div class="hd"><div class="kicker">5.8 · Investment Evaluation</div><h2 class="gt">開店投資評估與效率分析</h2><div class="script">Break Even</div></div>
+ <div class="row mid" style="gap:50px">
+  <div class="col f1" style="gap:24px">
+   <div class="tcap" style="font-size:30px">損益平衡點估計</div>
+   <div class="box-gold c" style="padding:36px 20px"><div class="fx" style="font-size:44px;font-family:var(--serif)"><b class="gt">BEP</b> ＝ <span class="frac"><span>固定費用</span><span>1 − 變動成本率 − 變動費用率</span></span></div></div>
+   <p class="sub" style="font-size:29px">營業額到達 BEP，收入剛好打平所有費用；超過的部分才是利潤。</p>
+  </div>
+  <div class="card" style="width:460px"><h3 style="font-size:34px">損益估算（5 年）</h3><ul class="sp"><li>回收年限</li><li>投資報酬率</li><li>資金運用</li></ul></div>
+ </div>
+</section>
+
+<!-- 互動：BEP -->
+<section class="slide ia" data-sec="05 競合、投資與開店後評估" data-title="互動：手搖飲店的損益平衡點">
+ <span class="badge">INTERACTIVE</span>
+ <div class="hd"><div class="kicker">Break-even Calculator</div><h2 class="gt">手搖飲店要賣幾杯才打平？</h2><div class="script">Cups to Cheers</div></div>
+ <div data-ia="bep"></div>
+</section>
+
+<!-- 五年損益預估表 -->
+<section class="slide" data-sec="05 競合、投資與開店後評估" data-title="開店後五年內損益預估表">
+ <div class="hd"><div class="kicker">5-Year P&amp;L Forecast</div><h2 class="gt">開店後五年內損益預估表</h2><div class="script">Plan Ahead</div></div>
+ <table class="form mid pl">
+  <tr><td class="k" style="width:260px"></td><td class="k c">第一年</td><td class="k c">第二年</td><td class="k c">第三年</td><td class="k c">第四年</td><td class="k c">第五年</td></tr>
+  <tr><td class="k">營業額</td><td></td><td></td><td></td><td></td><td></td></tr>
+  <tr><td class="k">毛利率</td><td></td><td></td><td></td><td></td><td></td></tr>
+  <tr><td class="k">毛利額</td><td></td><td></td><td></td><td></td><td></td></tr>
+  <tr><td class="k">銷管費用</td><td></td><td></td><td></td><td></td><td></td></tr>
+  <tr><td class="k" style="padding-left:34px;font-weight:400;color:var(--champ)">人事費</td><td></td><td></td><td></td><td></td><td></td></tr>
+  <tr><td class="k" style="padding-left:34px;font-weight:400;color:var(--champ)">水電費</td><td></td><td></td><td></td><td></td><td></td></tr>
+  <tr><td class="k" style="padding-left:34px;font-weight:400;color:var(--champ)">租金</td><td></td><td></td><td></td><td></td><td></td></tr>
+  <tr><td class="k" style="padding-left:34px;font-weight:400;color:var(--champ)">折舊</td><td></td><td></td><td></td><td></td><td></td></tr>
+  <tr><td class="k" style="padding-left:34px;font-weight:400;color:var(--champ)">促銷</td><td></td><td></td><td></td><td></td><td></td></tr>
+  <tr><td class="k" style="padding-left:34px;font-weight:400;color:var(--champ)">修繕</td><td></td><td></td><td></td><td></td><td></td></tr>
+  <tr><td class="k" style="padding-left:34px;font-weight:400;color:var(--champ)">其他</td><td></td><td></td><td></td><td></td><td></td></tr>
+  <tr><td class="k">營業利益</td><td></td><td></td><td></td><td></td><td></td></tr>
+  <tr><td class="k">營業外收支</td><td></td><td></td><td></td><td></td><td></td></tr>
+  <tr><td class="k">經營損益</td><td></td><td></td><td></td><td></td><td></td></tr>
+  <tr><td class="k">累計損益</td><td></td><td></td><td></td><td></td><td></td></tr>
+  <tr><td class="k" style="color:var(--rose)">損益平衡點（BEP）</td><td></td><td></td><td></td><td></td><td></td></tr>
+  <tr><td class="k" style="color:var(--rose)">投資報酬率</td><td></td><td></td><td></td><td></td><td></td></tr>
+ </table>
+</section>
+
+<!-- 地圖插針法 -->
+<section class="slide" data-sec="05 競合、投資與開店後評估" data-title="開店後評估：測量實際商圈（地圖插針法）">
+ <div class="hd"><div class="kicker">5.9 · Post-opening Review (1)</div><h2 class="gt">測量實際商圈：地圖插針法</h2><div class="script">Pin the Map</div></div>
+ <div class="row" style="gap:36px;align-items:center">
+  <div class="fig zoomable" style="width:640px;height:600px;padding:8px;flex:none"><img data-src="img/ch05-s39-1-1200.webp" alt="地圖插針法：平日商圈、假日商圈與商圈設定範圍"></div>
+  <div class="col f1" style="gap:18px">
+   <p class="lead" style="font-size:31px">把來店顧客的住址一一插在地圖上，就能看出<span class="hl">真正的商圈</span>長什麼樣子。</p>
+   <div class="tile"><span class="bub sm" style="background:radial-gradient(circle at 35% 30%,#fff,#ff6b5b 55%,#8c1d12)"></span><span><b class="hl">平日商圈</b>：顧客集中、範圍較小</span></div>
+   <div class="tile"><span class="bub sm" style="background:radial-gradient(circle at 35% 30%,#fff,#FFD700 55%,#9C7A2B)"></span><span><b class="hl">假日商圈</b>：範圍向外擴大</span></div>
+   <div class="tile"><span class="bub sm" style="background:radial-gradient(circle at 35% 30%,#fff,#d24b4b 55%,#5c0d0d)"></span><span><b class="hl">商圈設定範圍</b>：開店前預設的範圍，用來對照</span></div>
+  </div>
+ </div>
+</section>
+
+<!-- 交易客數推估驗證 -->
+<section class="slide" data-sec="05 競合、投資與開店後評估" data-title="開店後評估：交易客數推估驗證">
+ <div class="hd"><div class="kicker">5.9 · Post-opening Review (2)</div><h2 class="gt">交易客數推估驗證</h2><div class="script">Check the Forecast</div></div>
+ <div class="row" style="gap:40px">
+  <table class="form f1 c" style="font-size:25px">
+   <tr><td class="k" colspan="2" rowspan="2"></td><td class="k c" colspan="2">開幕前</td><td class="k c" colspan="2">開幕後</td></tr>
+   <tr><td class="k c">市佔率（m/s）</td><td class="k c">交易客數</td><td class="k c">市佔率（m/s）</td><td class="k c">交易客數</td></tr>
+   <tr><td class="k c" colspan="2">計畫店</td><td></td><td></td><td></td><td></td></tr>
+   <tr><td class="k c" rowspan="5">競合店</td><td class="k c">A</td><td></td><td></td><td></td><td></td></tr>
+   <tr><td class="k c">B</td><td></td><td></td><td></td><td></td></tr>
+   <tr><td class="k c">C</td><td></td><td></td><td></td><td></td></tr>
+   <tr><td class="k c">D</td><td></td><td></td><td></td><td></td></tr>
+   <tr><td class="k c">E</td><td></td><td></td><td></td><td></td></tr>
+   <tr><td class="k c" colspan="2">合計</td><td></td><td class="hl">100%</td><td></td><td class="hl">100%</td></tr>
+  </table>
+  <div class="card" style="width:400px;align-self:center"><h3 style="font-size:32px">為什麼要驗證？</h3><p class="sub" style="font-size:27px">比較開幕前的推估與開幕後的實際，找出估錯的地方（商圈範圍？入店率？競合店反應？），下一次展店就會估得更準。</p></div>
+ </div>
+</section>
+
+<!-- 扉頁 06 -->
+<section class="slide nopad" id="sec6" data-sec="06 零售與物流策略" data-title="06 零售與物流策略">
+ <div class="cover-img" data-bg="img/sec6-1600.webp"></div>
+ <div class="sec-in"><div class="sec-no gt">06</div><div class="sec-title">零售與物流策略</div><div class="sec-script">Retail Logistics</div>
+  <div class="sec-list"><div><span>✦</span>行銷通路與物流角色</div><div><span>✦</span>零售規模與物流策略、設立 DC 的三項動機</div><div><span>✦</span>物流中心型態</div><div><span>✦</span>百貨、便利商店、超市、量販、網路零售的物流</div></div></div>
+</section>
+
+<!-- 通路與物流角色 -->
+<section class="slide" data-sec="06 零售與物流策略" data-title="行銷通路與物流角色（圖 7-4）">
+ <div class="hd"><div class="kicker">Channel &amp; Logistics</div><h2 class="gt">行銷通路與物流角色</h2><div class="script">Shorter is Better</div></div>
+ <svg viewBox="0 0 1424 620" style="width:100%;height:620px">
+  <g font-size="26" text-anchor="middle">
+   <text x="330" y="30" font-size="28" font-weight="700" fill="#F4B9A6">傳統流程</text>
+   <text x="930" y="30" font-size="28" font-weight="700" fill="#FFD700">改善後流程</text>
+   <g><rect class="node" x="200" y="55" width="260" height="62" rx="31"/><text x="330" y="96">製造商</text>
+      <rect class="node" x="200" y="165" width="260" height="62" rx="31"/><text x="330" y="206">第一次批發商</text>
+      <rect class="node" x="200" y="275" width="260" height="62" rx="31"/><text x="330" y="316">第二次批發商</text>
+      <rect class="node" x="200" y="385" width="260" height="62" rx="31"/><text x="330" y="426">零售商</text>
+      <rect class="node" x="200" y="495" width="260" height="62" rx="31"/><text x="330" y="536">消費者</text></g>
+   <g><rect class="node hot" x="800" y="55" width="260" height="62" rx="31"/><text x="930" y="96">製造商</text>
+      <rect class="node hot" x="800" y="200" width="260" height="62" rx="31" filter="url(#gf)"/><text x="930" y="241" fill="#FFD700" font-weight="700">物流中心</text>
+      <rect class="node hot" x="800" y="345" width="260" height="62" rx="31"/><text x="930" y="386">直營連鎖商店</text>
+      <rect class="node hot" x="800" y="495" width="260" height="62" rx="31"/><text x="930" y="536">消費者</text></g>
+  </g>
+  <g stroke="#D4AF37" stroke-width="2.5" marker-end="url(#ar)"><line x1="330" y1="117" x2="330" y2="160"/><line x1="330" y1="227" x2="330" y2="270"/><line x1="330" y1="337" x2="330" y2="380"/><line x1="330" y1="447" x2="330" y2="490"/>
+   <line x1="930" y1="117" x2="930" y2="195"/><line x1="930" y1="262" x2="930" y2="340"/><line x1="930" y1="407" x2="930" y2="490"/></g>
+  <g transform="translate(80,300)"><ellipse rx="100" ry="64" fill="rgba(244,185,166,.18)" stroke="#F4B9A6"/><text text-anchor="middle" y="-6" font-size="27" fill="#FFE9E0">多階的</text><text text-anchor="middle" y="28" font-size="27" fill="#FFE9E0">行銷通路</text></g>
+  <g transform="translate(1250,230)"><ellipse rx="150" ry="100" fill="url(#pearl)" filter="url(#gf)"/><text text-anchor="middle" y="-26" font-size="25" font-weight="700" fill="#241703">縮短通路階層</text><text text-anchor="middle" y="10" font-size="25" font-weight="700" fill="#241703">降低成本</text><text text-anchor="middle" y="46" font-size="25" font-weight="700" fill="#241703">提升效率</text></g>
+  <text x="712" y="606" text-anchor="middle" font-size="22" fill="rgba(247,231,206,.8)">圖 7-4　傳統流程與改造後流程的物流型態</text>
+ </svg>
+</section>
+
+<!-- 零售規模與物流策略 -->
+<section class="slide" data-sec="06 零售與物流策略" data-title="零售規模與物流策略">
+ <div class="hd"><div class="kicker">Scale &amp; Logistics</div><h2 class="gt">零售規模與物流策略</h2><div class="script">Grow &amp; Deliver</div></div>
+ <p class="lead">零售業隨著店數擴大，需要開始思考<span class="hl">物流配送問題</span>，以維持營運穩定。主要原因如下：</p>
+ <div class="grid2 mt" style="gap:26px">
+  <div class="card"><div class="row mid" style="gap:16px"><span class="bub">1</span><p class="lead" style="font-size:30px">零售業態具有採取<span class="hl">連鎖店經營方式</span>的經營特質。</p></div></div>
+  <div class="card"><div class="row mid" style="gap:16px"><span class="bub">2</span><p class="lead" style="font-size:30px">物流中心（Distribution Center；<span class="hl">DC</span>）於採連鎖店經營的流通業中佔有策略性地位。</p></div></div>
+ </div>
+ <div class="row mid mt2" style="gap:30px;justify-content:center">
+  <div class="ph" style="width:420px;height:136px;background:#fff;padding:6px 16px"><img data-src="img/ch07-s23-2-600.webp" alt="萊爾富、OK 超商標誌" style="object-fit:contain"></div>
+  <div class="ph" style="width:420px;height:136px;background:#fff;padding:6px 16px"><img data-src="img/ch07-s23-1-600.webp" alt="7-ELEVEN、全家標誌" style="object-fit:contain"></div>
+ </div>
+</section>
+
+<!-- 圖 7-5 -->
+<section class="slide" data-sec="06 零售與物流策略" data-title="連鎖店擴張歷程之物流配置（圖 7-5）">
+ <div class="hd"><div class="kicker">Figure 7-5</div><h2 class="gt">連鎖店擴張歷程之物流配置</h2><div class="script">Five Stages</div></div>
+ <div class="col" style="gap:10px">
+  <div class="row mid" style="gap:16px"><b class="hl" style="width:110px;font-size:28px">階段一</b><div class="tile f1" style="padding:12px 18px;font-size:26px">特定商圈內發展連鎖店</div><span class="hl">＝</span><div class="chip sel" style="font-size:26px;width:180px;justify-content:center">店數極少</div><span class="hl">＝</span><div class="tile f1" style="padding:12px 18px;font-size:26px">由商品供應商配送商品至各店</div></div>
+  <div class="row mid" style="gap:16px"><b class="hl" style="width:110px;font-size:28px">階段二</b><div class="tile f1" style="padding:12px 18px;font-size:26px">逐漸向外圍地區擴大連鎖店營業範圍</div><span class="hl">＝</span><div class="chip sel" style="font-size:26px;width:180px;justify-content:center">店數漸多</div><span class="hl">＝</span><div class="tile f1" style="padding:12px 18px;font-size:26px">特定商圈集中由物流中心配送，外圍地區由商品供應商配送</div></div>
+  <div class="row mid" style="gap:16px"><b class="hl" style="width:110px;font-size:28px">階段三</b><div class="tile f1" style="padding:12px 18px;font-size:26px">向其他地區增加連鎖店</div><span class="hl">＝</span><div class="chip sel" style="font-size:26px;width:180px;justify-content:center">店數增多</div><span class="hl">＝</span><div class="tile f1" style="padding:12px 18px;font-size:26px">開始成立複數物流中心</div></div>
+  <div class="row mid" style="gap:16px"><b class="hl" style="width:110px;font-size:28px">階段四</b><div class="tile f1" style="padding:12px 18px;font-size:26px">全國各地廣設連鎖店</div><span class="hl">＝</span><div class="chip sel" style="font-size:26px;width:180px;justify-content:center">店數極多</div><span class="hl">＝</span><div class="tile f1" style="padding:12px 18px;font-size:26px">各區域各設置一處物流中心</div></div>
+  <div class="row mid" style="gap:16px"><b class="hl" style="width:110px;font-size:28px">階段五</b><div class="tile f1" style="padding:12px 18px;font-size:26px">世界各地廣設連鎖店</div><span class="hl">＝</span><div class="chip sel" style="font-size:26px;width:180px;justify-content:center">店數更多</div><span class="hl">＝</span><div class="tile f1" style="padding:12px 18px;font-size:26px;border-color:var(--gold)">全球物流策略，依市場需要展開一至四階段的過程</div></div>
+ </div>
+</section>
+
+<!-- 互動：擴張排序 -->
+<section class="slide ia" data-sec="06 零售與物流策略" data-title="互動：物流配置怎麼演變？（排序）">
+ <span class="badge">INTERACTIVE</span>
+ <div class="hd"><div class="kicker">Put in Order</div><h2 class="gt">物流配置怎麼演變？</h2><div class="script">Stage by Stage</div></div>
+ <p class="sub" style="margin-bottom:8px;font-size:29px">想像一家新開的連鎖咖啡店，從家鄉一路開到海外。不看上一頁，你能排出它的物流配置順序嗎？</p>
+ <div data-ia="stages"></div>
+</section>
+
+<!-- 三動機 -->
+<section class="slide" data-sec="06 零售與物流策略" data-title="成立 DC 的三項動機">
+ <div class="hd"><div class="kicker">Why Build a DC</div><h2 class="gt">成立 DC 的三項動機</h2><div class="script">Three Reasons</div></div>
+ <div class="row mid" style="gap:44px">
+  <div class="col f1" style="gap:22px">
+   <p class="lead" style="font-size:31px">成立 DC 通常需要投資<span class="hl">大量資金</span>，而連鎖零售業卻還是想要投資設立 DC，主要有三項動機：</p>
+   <div class="tile"><span class="bub">1</span><span style="font-size:30px;font-weight:700" class="gt">削減營運成本</span></div>
+   <div class="tile"><span class="bub">2</span><span style="font-size:30px;font-weight:700" class="gt">穩定商品供應</span></div>
+   <div class="tile"><span class="bub">3</span><span style="font-size:30px;font-weight:700" class="gt">奪取通路支配權</span></div>
+  </div>
+  <div class="ph zoomable" style="width:600px;height:400px;flex:none"><img data-src="img/ch07-s25-1-1000.webp" alt="物流中心外觀"></div>
+ </div>
+</section>
+
+<!-- 動機 1、2 -->
+<section class="slide" data-sec="06 零售與物流策略" data-title="動機一、二：削減營運成本、穩定商品供應">
+ <div class="hd"><div class="kicker">Motives 1 &amp; 2</div><h2 class="gt">削減成本與穩定供應</h2><div class="script">Buy Big, Never Run Out</div></div>
+ <div class="grid2" style="gap:30px">
+  <div class="card" style="padding:30px"><div class="row mid" style="gap:14px"><span class="bub">1</span><h3 style="margin:0;font-size:34px">削減營運成本</h3></div>
+   <p class="lead mt" style="font-size:29px">大型連鎖流通業以「<span class="hl">大量店舖網</span>」展現出的雄厚「<span class="hl">大量銷售力</span>」為後盾，再利用其大量商品採購的「<span class="hl">購買力</span>」為籌碼，得以和商品供應商進行討價還價，降低商品進貨成本。</p></div>
+  <div class="card" style="padding:30px"><div class="row mid" style="gap:14px"><span class="bub">2</span><h3 style="margin:0;font-size:34px">穩定商品供應</h3></div>
+   <p class="lead mt" style="font-size:29px">流通業擁有了 DC 以後，可以對連鎖系統內各加盟店<span class="hl">穩定提供所需商品</span>，統籌管理各加盟店商品庫存量與供給必需品。</p></div>
+ </div>
+</section>
+
+<!-- 動機 3 -->
+<section class="slide" data-sec="06 零售與物流策略" data-title="動機三：奪取通路支配權">
+ <div class="hd"><div class="kicker">Motive 3</div><h2 class="gt">奪取通路支配權</h2><div class="script">Own the Channel</div></div>
+ <p class="lead" style="font-size:31px">通路末端的大型連鎖流通業因擴大對物流活動掌控權，將<span class="hl">強化它在通路上的地位</span>。不需再依賴製造業者、批發業者提供商品配送服務，可自己決定商品零售價格政策、商品流通政策。</p>
+ <div class="row mid mt2" style="justify-content:center;gap:24px">
+  <div class="bub" style="width:190px;height:190px;font-size:32px;font-family:var(--serif);line-height:1.3;text-align:center">大量<br>採購力</div><span class="gt" style="font-size:70px">＋</span>
+  <div class="bub" style="width:190px;height:190px;font-size:32px;font-family:var(--serif);line-height:1.3;text-align:center">大量<br>銷售力</div><span class="gt" style="font-size:70px">＋</span>
+  <div class="bub" style="width:190px;height:190px;font-size:32px;font-family:var(--serif);line-height:1.3;text-align:center">市場<br>資訊力</div><span class="gt" style="font-size:70px">＝</span>
+  <div class="bub" style="width:210px;height:210px;font-size:34px;font-family:var(--serif);line-height:1.3;text-align:center;background:radial-gradient(circle at 35% 30%,#FFF1EC,#F4B9A6 50%,#B5715E)">開發<br>自有品牌</div>
+ </div>
+</section>
+
+<!-- 互動：三動機分類 -->
+<section class="slide ia" data-sec="06 零售與物流策略" data-title="互動：這是哪一個動機？">
+ <span class="badge">INTERACTIVE</span>
+ <div class="hd"><div class="kicker">Spot the Motive</div><h2 class="gt">這是哪一個動機？</h2><div class="script">Sort It Out</div></div>
+ <div data-ia="dcmotive" class="compact"></div>
+</section>
+
+<!-- 物流中心類別 -->
+<section class="slide" data-sec="06 零售與物流策略" data-title="物流中心類別（五種零售業態）">
+ <div class="hd"><div class="kicker">DC by Retail Format</div><h2 class="gt">物流中心類別</h2><div class="script">Five Formats</div></div>
+ <div class="row mid" style="gap:50px">
+  <div class="tiles f1">
+   <div class="tile" style="font-size:30px;cursor:pointer" data-goto="lg-dept" ><span class="bub sm">1</span>百貨公司物流型態</div>
+   <div class="tile" style="font-size:30px;cursor:pointer" data-goto="lg-cvs" ><span class="bub sm">2</span>便利商店物流型態</div>
+   <div class="tile" style="font-size:30px;cursor:pointer" data-goto="lg-sm" ><span class="bub sm">3</span>超市物流型態</div>
+   <div class="tile" style="font-size:30px;cursor:pointer" data-goto="lg-hm" ><span class="bub sm">4</span>量販店物流型態</div>
+   <div class="tile" style="font-size:30px;cursor:pointer" data-goto="lg-ec" ><span class="bub sm">5</span>網路零售店物流型態</div>
+  </div>
+  <div class="fig zoomable" style="width:560px;height:450px;flex:none"><img data-src="img/ch07-s28-1-900.webp" alt="物流中心、零售商與消費者關係圖"></div>
+ </div>
+</section>
+
+<!-- 表 7-3 -->
+<section class="slide" data-sec="06 零售與物流策略" data-title="表 7-3 物流中心型態">
+ <div class="hd"><div class="kicker">Table 7-3</div><h2 class="gt">物流中心型態</h2><div class="script">Who Runs the DC</div></div>
+ <table class="tb" style="font-size:25px">
+  <tr><th style="width:210px">類別</th><th>功能</th><th style="width:390px">舉例</th></tr>
+  <tr><td>製造商物流中心</td><td>由製造商為了確保商品通路，並提高銷售物流效率，向下整合所成立的物流中心。</td><td>統一企業</td></tr>
+  <tr><td>批發商物流中心</td><td>由批發商或代理商為同時掌握商流與物流所成立的物流中心。</td><td>德記 CDS（Contract Distribution Service，全方位物流服務）物流中心</td></tr>
+  <tr><td>貨運業者物流中心</td><td>由貨運公司藉由本身具有車隊的優勢所成立的物流中心。</td><td>新竹貨運、大榮貨運</td></tr>
+  <tr><td>零售商物流中心</td><td>由零售商為因應多變的消費需求，減少流通通路以及增加商品議價空間，向上整合所成立的物流中心。</td><td>全家便利商店成立的全台物流中心</td></tr>
+  <tr><td>區域物流中心</td><td>負責處理需開箱揀取少量商品的訂單，揀取完後利用交通較為順暢的時段運送到前端型物流中心（Frontier Distribution Center；FDC）。</td><td>日茂物流</td></tr>
+  <tr><td>邊境物流中心</td><td>貨品暫時存放的轉運站，或要配送貨品到國外中繼站。</td><td></td></tr>
+ </table>
+</section>
+
+<!-- 互動：物流中心型態 -->
+<section class="slide ia" data-sec="06 零售與物流策略" data-title="互動：這是哪一種物流中心？">
+ <span class="badge">INTERACTIVE</span>
+ <div class="hd"><div class="kicker">Name That DC</div><h2 class="gt">這是哪一種物流中心？</h2><div class="script">Six Types</div></div>
+ <div data-ia="dctype" class="compact"></div>
+</section>
+
+<!-- 百貨 -->
+<section class="slide" id="lg-dept" data-sec="06 零售與物流策略" data-title="百貨公司物流型態（圖 7-6）">
+ <div class="hd"><div class="kicker">Department Store</div><h2 class="gt">百貨公司物流型態</h2><div class="script">Straight to the Counter</div></div>
+ <div class="row mid" style="gap:36px">
+  <div class="fig zoomable" style="width:860px;height:600px;flex:none"><img data-src="img/ch07-s30-1-1400.webp" alt="百貨公司物流型態圖"></div>
+  <div class="card glow f1"><p class="lead" style="font-size:31px">商品供應商透過<span class="hl">運輸業者直送</span>到百貨公司；遇到商品調貨或退換貨時，專櫃業者將商品退回工廠。</p></div>
+ </div>
+</section>
+
+<!-- 便利商店 -->
+<section class="slide" id="lg-cvs" data-sec="06 零售與物流策略" data-title="便利商店物流型態（圖 7-7）">
+ <div class="hd"><div class="kicker">Convenience Store</div><h2 class="gt">便利商店物流型態</h2><div class="script">Data Drives Delivery</div></div>
+ <div class="row mid" style="gap:36px">
+  <div class="fig zoomable" style="width:860px;height:600px;flex:none"><img data-src="img/ch07-s31-1-1400.webp" alt="7-ELEVEN 物流型態圖"></div>
+  <div class="card glow f1"><p class="lead" style="font-size:31px">7-ELEVEN 透過<span class="hl">資料處理中心</span>通知不同的配合廠商提供物流配送：常溫、低溫、出版品、鮮食各有物流中心，依店別配送。</p></div>
+ </div>
+</section>
+
+<!-- 超市 -->
+<section class="slide" id="lg-sm" data-sec="06 零售與物流策略" data-title="超市物流型態：第三方物流（圖 7-8）">
+ <div class="hd"><div class="kicker">Supermarket · 3PL</div><h2 class="gt">超市物流型態</h2><div class="script">Third-Party Logistics</div></div>
+ <p class="lead" style="font-size:31px">全聯超市的<span class="hl">第三方物流</span>（Third Party Logistics，3PL，簡稱夥伴關係）。</p>
+ <div class="row mid mt" style="gap:36px">
+  <div class="card f1"><p class="sub" style="font-size:26px;line-height:1.7">原始供應商或者總代理每個月與全聯福利中心總公司協商銷售策略，擬定方案之後交由各地區的代理商執行基本的物流配送作業；供應商依照各賣場的銷售業績做銷售收款，並依各賣場實際的銷售數字給代理商佣金。</p></div>
+  <div class="fig zoomable" style="width:760px;height:420px;flex:none"><img data-src="img/ch07-s32-1-1200.webp" alt="全聯福利中心物流型態圖"></div>
+ </div>
+</section>
+
+<!-- 量販 -->
+<section class="slide" id="lg-hm" data-sec="06 零售與物流策略" data-title="量販物流型態（圖 7-9、圖 7-10）">
+ <div class="hd"><div class="kicker">Hypermarket</div><h2 class="gt">量販物流型態</h2><div class="script">Gather Then Ship</div></div>
+ <p class="lead" style="font-size:30px">相對於其他連鎖業態，量販店由於其<span class="hl">供應商眾多</span>，因此商品的「<span class="hl">集貨</span>」功能更顯得重要。</p>
+ <div class="grid2 mt" style="gap:30px">
+  <div><div class="tcap" style="font-size:27px">跨國性業者</div><div class="fig zoomable" style="height:400px"><img data-src="img/ch07-s33-1-1200.webp" alt="圖 7-9 家樂福量販店物流網路示意圖"></div></div>
+  <div><div class="tcap" style="font-size:27px">國內本土性量販店</div><div class="fig zoomable" style="height:400px"><img data-src="img/ch07-s34-1-1200.webp" alt="圖 7-10 大樂量販店物流網路示意"></div></div>
+ </div>
+ <p class="small c" style="margin-top:10px;font-size:20px">資料來源：溫哲欽（2004），〈國內量販店物流體系之探討〉，國立成功大學交通管理科學研究所碩士論文。</p>
+</section>
+
+<!-- 網路零售 -->
+<section class="slide" id="lg-ec" data-sec="06 零售與物流策略" data-title="網路零售店物流型態（圖 7-12）">
+ <div class="hd"><div class="kicker">Online Retail</div><h2 class="gt">網路零售店物流型態</h2><div class="script">Pick Up at the Corner</div></div>
+ <div class="row" style="gap:30px">
+  <div class="col f1" style="gap:20px">
+   <p class="lead" style="font-size:29px">臺灣目前便利商店的密集程度居全球之冠，便利商店也於 1999 年推出<span class="hl">線上購物超商取貨</span>的服務，主要分為三大服務：</p>
+   <div class="row" style="gap:14px"><div class="chip sel" style="font-size:26px">取貨付款</div><div class="chip sel" style="font-size:26px">取貨不付款</div><div class="chip sel" style="font-size:26px">付款不取貨</div></div>
+   <div class="fig zoomable" style="height:230px;padding:10px"><img data-src="img/ch07-s35-1-1400.webp" alt="網路書店經大智通物流到統一超商"></div>
+  </div>
+  <div class="fig zoomable" style="width:600px;height:610px;flex:none;padding:10px"><img data-src="img/ch07-s36-1-1100.webp" alt="圖 7-12 臺灣網路書店超商配物流型態"></div>
+ </div>
+</section>
+
+<!-- 互動：取貨服務 -->
+<section class="slide ia" data-sec="06 零售與物流策略" data-title="互動：這是哪一種超商取貨服務？">
+ <span class="badge">INTERACTIVE</span>
+ <div class="hd"><div class="kicker">Pick-up Services</div><h2 class="gt">這是哪一種超商取貨服務？</h2><div class="script">Pay or Pick</div></div>
+ <div data-ia="pickup" class="compact"></div>
+</section>
+
+<!-- 總結 -->
+<section class="slide" data-sec="收尾" data-title="一張圖串起今天的重點">
+ <div class="hd"><div class="kicker">Wrap-up</div><h2 class="gt">一張圖串起今天的重點</h2><div class="script">The Golden Thread</div></div>
+ <div class="row mid" style="gap:12px;justify-content:space-between">
+  <div class="card c" style="width:214px;padding:22px 10px" data-goto="sec1"><div class="bub" style="margin:0 auto 12px">01</div><h3 style="font-size:29px">開發觀念</h3><p class="small" style="font-size:22px;color:var(--champ)">為開店找地點<br>租金率而非租金</p></div><span class="gt" style="font-size:40px">›</span>
+  <div class="card c" style="width:214px;padding:22px 10px" data-goto="sec2"><div class="bub" style="margin:0 auto 12px">02</div><h3 style="font-size:29px">看懂商圈</h3><p class="small" style="font-size:22px;color:var(--champ)">三層商圈<br>來客數＝流量×入店×成交</p></div><span class="gt" style="font-size:40px">›</span>
+  <div class="card c" style="width:214px;padding:22px 10px" data-goto="sec3"><div class="bub" style="margin:0 auto 12px">03</div><h3 style="font-size:29px">實地調查</h3><p class="small" style="font-size:22px;color:var(--champ)">飽和度 IRS<br>紀錄表、流量調查</p></div><span class="gt" style="font-size:40px">›</span>
+  <div class="card c" style="width:214px;padding:22px 10px" data-goto="sec4"><div class="bub" style="margin:0 auto 12px">04</div><h3 style="font-size:29px">預估業績</h3><p class="small" style="font-size:22px;color:var(--champ)">Reilly、Huff<br>迴歸、類比</p></div><span class="gt" style="font-size:40px">›</span>
+  <div class="card c" style="width:214px;padding:22px 10px" data-goto="sec5"><div class="bub" style="margin:0 auto 12px">05</div><h3 style="font-size:29px">算清投資</h3><p class="small" style="font-size:22px;color:var(--champ)">BEP、五年損益<br>開店後驗證</p></div><span class="gt" style="font-size:40px">›</span>
+  <div class="card c glow" style="width:214px;padding:22px 10px" data-goto="sec6"><div class="bub" style="margin:0 auto 12px">06</div><h3 style="font-size:29px">撐起物流</h3><p class="small" style="font-size:22px;color:var(--champ)">DC 三動機<br>五種業態物流</p></div>
+ </div>
+ <p class="lead c mt2" style="font-size:34px">好的立地讓客人<span class="hl">走得進來</span>，好的物流讓商品<span class="hl">一直都在</span>。</p>
+</section>
+
+<!-- 課後任務 -->
+<section class="slide ia" data-sec="收尾" data-title="課後任務：商圈踏查清單">
+ <span class="badge">INTERACTIVE</span>
+ <div class="hd"><div class="kicker">Field Mission</div><h2 class="gt">課後任務：商圈踏查</h2><div class="script">Go Explore</div></div>
+ <div class="row" style="gap:36px">
+  <div class="card f1" data-ia="checklist" style="padding:22px 26px">
+   <div class="chk"><span class="tx">選一個你熟悉的商圈，畫出它的主要、次要、邊緣商圈</span></div>
+   <div class="chk"><span class="tx">用「流量調查計數器」在上班與下班兩個時段，各記錄 15 分鐘的行人與車流</span></div>
+   <div class="chk"><span class="tx">填一張「商圈路線開發調查紀錄表」（單號或雙號路段擇一）</span></div>
+   <div class="chk"><span class="tx">找出商圈裡的兩個磁場，以及被它們吸引來的店</span></div>
+   <div class="chk"><span class="tx">替一家想開的新店，用 Huff 或 Reilly 法則估算吸引力</span></div>
+   <div class="chk"><span class="tx">觀察一家連鎖店：誰送貨、多久送一次？推測它屬於哪一種物流型態</span></div>
+   <div class="ia-score" data-o="msum" style="margin-top:10px;text-align:right"></div>
+  </div>
+  <div class="col" style="width:400px;gap:20px">
+   <div class="card glow c" data-goto="3" style="cursor:pointer"><div class="sec-script" style="font-size:44px;margin:0">Look Back</div><p class="sub" style="font-size:28px">回到開場的投票：學完之後，你還會選同一個地點嗎？</p><p class="small mt" style="font-size:23px">點這張卡片回到第 3 頁 ›</p></div>
+   <div class="card"><p class="small" style="font-size:23px">勾選紀錄只存在你這台裝置上，方便下次打開接著做。</p></div>
+  </div>
+ </div>
+</section>
+
+<!-- 結尾 -->
+<section class="slide nopad" data-sec="收尾" data-title="結尾：Cheers!">
+ <div class="cover-img" data-bg="img/finale-1600.webp"></div>
+ <div class="sec-in"><div class="sec-script" style="font-size:120px;color:var(--gold);text-shadow:0 0 30px rgba(255,215,0,.5)">Cheers!</div>
+  <div class="sec-title gt" style="font-size:60px">為下一家好店乾杯</div>
+  <div class="sec-list" style="font-size:32px">商圈調查 · 立地評估 · 物流策略<br><span>✦</span>有問題歡迎課後討論</div></div>
+</section>
+
+</div></div>
+<div class="navz" id="navL">‹</div><div class="navz" id="navR">›</div>
+<div id="pageno"></div>
+<div id="tools"><button id="btnOv" title="總覽 O">☰ 總覽</button><button id="btnFs" title="全螢幕 F">⛶ 全螢幕</button><button id="btnFx" title="背景特效 B">✦ 特效</button><button id="btnHelp" title="說明 H">? 說明</button></div>
+<div id="mnav"><button id="mprev">‹ 上一頁</button><span id="mpage"></span><button id="mov">☰</button><button id="mnext">下一頁 ›</button></div>
+<div id="jump"></div>
+<div id="overview"></div>
+<div id="lightbox"><img alt=""></div>
+<div id="help"><div class="card"><h3>操作說明</h3><table>
+<tr><td>→ ↓ 空白鍵 PageDown</td><td>下一頁</td></tr>
+<tr><td>← ↑ PageUp</td><td>上一頁</td></tr>
+<tr><td>數字＋Enter</td><td>跳到指定頁（互動頁的數字鍵用於作答／投票）</td></tr>
+<tr><td>O</td><td>總覽全部頁面</td></tr>
+<tr><td>F</td><td>全螢幕</td></tr>
+<tr><td>B</td><td>開關背景散景與氣泡</td></tr>
+<tr><td>點圖片</td><td>放大檢視（有放大鏡游標的圖）</td></tr>
+<tr><td>手機</td><td>左右滑動或用底部按鈕翻頁</td></tr></table></div></div>
+<script>/* ===== 播放器：縮放舞台、翻頁、總覽、散景、氣泡 ===== */
+(function(){
+const stage=document.getElementById('stage');
+const slides=[...stage.querySelectorAll('.slide')];
+const N=slides.length;
+let cur=0;
+window.DECK={slides,N,get cur(){return cur},go};
+
+/* 舞台縮放 */
+function fit(){
+  const vw=innerWidth, vh=innerHeight;
+  const mob=matchMedia('(max-width:820px),(max-height:520px)').matches;
+  const land=vh<520&&vw>vh;
+  const availH=mob&&!land?vh-52:vh;
+  const s=Math.min(vw/1600,availH/900);
+  const x=(vw-1600*s)/2, y=(availH-900*s)/2;
+  stage.style.transform=`translate(${x-vw/2}px,${y-vh/2}px) scale(${s})`;
+  stage.style.left=vw/2+'px';stage.style.top=vh/2+'px';
+}
+addEventListener('resize',fit);fit();
+
+/* 翻頁 */
+function go(n,inst){
+  n=Math.max(0,Math.min(N-1,n));
+  slides[cur].classList.remove('on');
+  cur=n;
+  const s=slides[cur];
+  s.classList.add('on');
+  document.getElementById('bar').style.width=((cur+1)/N*100)+'%';
+  document.getElementById('pageno').innerHTML=`<b>${cur+1}</b> / ${N}`;
+  const mp=document.getElementById('mpage');if(mp)mp.textContent=`${cur+1} / ${N}`;
+  if(location.hash!=='#'+(cur+1))history.replaceState(null,'','#'+(cur+1));
+  s.dispatchEvent(new CustomEvent('enter'));
+  lazyImgs(s);[slides[cur+1],slides[cur-1]].forEach(x=>x&&lazyImgs(x));
+  try{localStorage.setItem('champ-deck-page',cur+1)}catch(e){}
+}
+function lazyImgs(s){s.querySelectorAll('img[data-src]').forEach(i=>{i.src=i.dataset.src;i.removeAttribute('data-src')});
+  s.querySelectorAll('[data-bg]').forEach(d=>{d.style.backgroundImage=`url(${d.dataset.bg})`;d.removeAttribute('data-bg')})}
+const next=()=>go(cur+1), prev=()=>go(cur-1);
+
+/* 鍵盤 */
+let jumpBuf='',jumpT;
+const jumpEl=document.getElementById('jump');
+function typing(e){const t=e.target;return t&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA'||t.tagName==='SELECT'||t.isContentEditable)}
+addEventListener('keydown',e=>{
+  if(typing(e))return;
+  if(document.getElementById('overview').classList.contains('on')){if(e.key==='Escape'||e.key==='o'||e.key==='O')toggleOv();return}
+  if(document.getElementById('lightbox').classList.contains('on')){closeLb();return}
+  if(document.getElementById('help').classList.contains('on')){document.getElementById('help').classList.remove('on');return}
+  const s=slides[cur];
+  // 投影片自訂按鍵（互動頁的數字鍵）
+  if(s.onkey&&s.onkey(e)===true){e.preventDefault();return}
+  const k=e.key;
+  if(/^[0-9]$/.test(k)){jumpBuf+=k;jumpEl.textContent=jumpBuf;jumpEl.style.display='block';clearTimeout(jumpT);jumpT=setTimeout(()=>{jumpBuf='';jumpEl.style.display='none'},1800);return}
+  if(k==='Enter'&&jumpBuf){go(parseInt(jumpBuf)-1);jumpBuf='';jumpEl.style.display='none';return}
+  if(['ArrowRight','ArrowDown','PageDown',' '].includes(k)){e.preventDefault();next()}
+  else if(['ArrowLeft','ArrowUp','PageUp','Backspace'].includes(k)){e.preventDefault();prev()}
+  else if(k==='Home')go(0);else if(k==='End')go(N-1);
+  else if(k==='f'||k==='F')fs();
+  else if(k==='o'||k==='O')toggleOv();
+  else if(k==='h'||k==='H'||k==='?')document.getElementById('help').classList.add('on');
+  else if(k==='b'||k==='B')toggleFx();
+});
+function fs(){if(!document.fullscreenElement)document.documentElement.requestFullscreen&&document.documentElement.requestFullscreen();else document.exitFullscreen()}
+
+/* 邊緣點擊翻頁 */
+document.getElementById('navL').onclick=prev;document.getElementById('navR').onclick=next;
+document.getElementById('mprev').onclick=prev;document.getElementById('mnext').onclick=next;
+document.getElementById('mov').onclick=toggleOv;
+
+/* 觸控滑動（只攔橫向，避免瀏覽器返回手勢） */
+let tx=null,ty=null,tt=0;
+addEventListener('touchstart',e=>{if(e.touches.length!==1){tx=null;return}tx=e.touches[0].clientX;ty=e.touches[0].clientY;tt=Date.now()},{passive:true});
+addEventListener('touchmove',e=>{if(tx===null)return;const dx=e.touches[0].clientX-tx,dy=e.touches[0].clientY-ty;if(Math.abs(dx)>Math.abs(dy)&&e.cancelable)e.preventDefault()},{passive:false});
+addEventListener('touchend',e=>{if(tx===null)return;const t=e.changedTouches[0];const dx=t.clientX-tx,dy=t.clientY-ty;
+  if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.4&&Date.now()-tt<700&&!e.target.closest('.noswipe,input[type=range]')){dx<0?next():prev()}tx=null});
+
+/* 總覽 */
+const ov=document.getElementById('overview');
+function buildOv(){
+  let h='<h3>Contents</h3>',sec='';
+  slides.forEach((s,i)=>{
+    const sc=s.dataset.sec||'';
+    if(sc!==sec){if(sec)h+='</div>';h+=`<div class="sec">${sc}</div><div class="grid">`;sec=sc}
+    h+=`<a href="#${i+1}" data-i="${i}" class="${s.classList.contains('ia')?'ia':''}"><i>${i+1}</i>${s.dataset.title||''}</a>`});
+  ov.innerHTML=h+'</div>';
+  ov.onclick=e=>{const a=e.target.closest('a');if(a){e.preventDefault();toggleOv();go(+a.dataset.i)}else toggleOv()};
+}
+function toggleOv(){if(!ov.innerHTML)buildOv();ov.classList.toggle('on');
+  ov.querySelectorAll('a').forEach(a=>a.classList.toggle('cur',+a.dataset.i===cur));
+  const c=ov.querySelector('a.cur');if(c&&ov.classList.contains('on'))c.scrollIntoView({block:'center'})}
+document.getElementById('btnOv').onclick=toggleOv;
+document.getElementById('btnFs').onclick=fs;
+document.getElementById('btnHelp').onclick=()=>document.getElementById('help').classList.add('on');
+document.getElementById('help').onclick=()=>document.getElementById('help').classList.remove('on');
+document.getElementById('btnFx').onclick=toggleFx;
+
+/* 目錄頁連結 */
+stage.addEventListener('click',e=>{const a=e.target.closest('[data-goto]');if(!a)return;const t=a.dataset.goto;
+  go(/^\d+$/.test(t)?+t-1:slides.findIndex(s=>s.id===t))});
+
+/* 圖片放大 */
+const lb=document.getElementById('lightbox');
+stage.addEventListener('click',e=>{const im=e.target.closest('.zoomable img');if(im){lb.querySelector('img').src=im.src;lb.classList.add('on')}});
+function closeLb(){lb.classList.remove('on')}
+lb.onclick=closeLb;
+
+/* 散景光斑 */
+const bk=document.getElementById('bokeh');
+for(let i=0;i<22;i++){const d=document.createElement('i');const r=30+Math.random()*120;
+  d.style.cssText=`width:${r}px;height:${r}px;left:${Math.random()*100}%;top:${Math.random()*100}%;animation-duration:${18+Math.random()*24}s;animation-delay:${-Math.random()*20}s;opacity:${.12+Math.random()*.35}`;
+  bk.appendChild(d)}
+
+/* 香檳氣泡（canvas） */
+const cv=document.getElementById('fizz'),cx=cv.getContext('2d');let W,H,parts=[],fxOn=true,raf;
+function rs(){W=cv.width=innerWidth*devicePixelRatio;H=cv.height=innerHeight*devicePixelRatio}
+addEventListener('resize',rs);rs();
+for(let i=0;i<46;i++)parts.push(np(true));
+function np(init){return{x:Math.random()*W,y:init?Math.random()*H:H+20,r:(Math.random()*2.6+.6)*devicePixelRatio,v:(Math.random()*.5+.18)*devicePixelRatio,w:Math.random()*6.28,a:Math.random()*.55+.2,g:Math.random()<.35}}
+function tick(){cx.clearRect(0,0,W,H);
+  for(const p of parts){p.y-=p.v;p.w+=.02;p.x+=Math.sin(p.w)*.3;if(p.y<-10)Object.assign(p,np(false));
+    cx.beginPath();cx.arc(p.x,p.y,p.r,0,6.283);
+    if(p.g){cx.fillStyle=`rgba(255,215,0,${p.a})`;cx.shadowColor='rgba(255,215,0,.9)';cx.shadowBlur=8*devicePixelRatio;cx.fill()}
+    else{cx.strokeStyle=`rgba(255,240,205,${p.a})`;cx.lineWidth=.8*devicePixelRatio;cx.shadowBlur=0;cx.stroke()}}
+  raf=requestAnimationFrame(tick)}
+tick();
+function toggleFx(){fxOn=!fxOn;cv.style.display=bk.style.display=fxOn?'':'none';if(fxOn)tick();else cancelAnimationFrame(raf)}
+document.addEventListener('visibilitychange',()=>{if(document.hidden)cancelAnimationFrame(raf);else if(fxOn)tick()});
+
+addEventListener('hashchange',()=>{const n=parseInt(location.hash.slice(1));if(!isNaN(n)&&n-1!==cur)go(n-1)});
+/* 起始頁 */
+const h=parseInt(location.hash.slice(1));
+go(isNaN(h)?0:h-1);
+})();
+
+/* ===== 互動元件（分類、排序、測驗、投票、計算器、計數器、檢核表） ===== */
+(function(){
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const h=(tag,cls,html)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(html!=null)e.innerHTML=html;return e};
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const fmt=n=>Math.round(n).toLocaleString('en-US');
+const store={get(k,d){try{const v=localStorage.getItem('champ-'+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem('champ-'+k,JSON.stringify(v))}catch(e){}}};
+const slideOf=el=>el.closest('.slide');
+
+/* ---------------- 設定 ---------------- */
+const CFG={
+ loctype:{type:'classify',cols:3,
+  bins:['獨立店','店中店','都會型','社區型','辦公型','轉運型','校園型','遊樂型','夜市型'],
+  items:[
+   ['省道旁獨棟的汽車美容中心，靠路過車流上門',0],
+   ['Outlet 購物城裡承租櫃位的運動品牌',1],
+   ['台北東區忠孝敦化一帶的潮牌旗艦店',2],
+   ['住宅大樓一樓的自助洗衣店',3],
+   ['科學園區旁只做平日午餐的便當店',4],
+   ['高鐵站大廳的伴手禮店',5],
+   ['大學後門的影印店，寒暑假生意掉一大半',6],
+   ['澎湖觀音亭海濱的冰品店，花火節最旺',7],
+   ['逢甲夜市的大腸包小腸攤',8]]},
+ magnet:{type:'classify',cols:4,
+  bins:['健身中心','國高中學校','馬公港渡輪碼頭','傳統市場'],
+  items:[['健康餐盒店',0],['運動營養品專賣',0],['運動用品店',0],['運動按摩工作室',0],
+   ['參考書店',1],['影印文具店',1],['補習班',1],['制服訂製店',1],
+   ['伴手禮店',2],['機車出租行',2],['行李寄放站',2],
+   ['南北乾貨行',3],['五金雜貨行',3],['鍋具廚具店',3],['醬菜蜜餞行',3]]},
+ dcmotive:{type:'classify',cols:3,
+  bins:['削減營運成本','穩定商品供應','奪取通路支配權'],
+  items:[
+   ['憑著上千家門市的訂量，向飲料廠爭取更低的進價',0],
+   ['集中採購、整車配送，攤低每件商品的進貨與運送成本',0],
+   ['颱風前夕統一調度，讓各門市泡麵、礦泉水不斷貨',1],
+   ['各店庫存由物流中心統籌，門市不必各自囤貨',1],
+   ['不再靠批發商送貨，自己決定新品何時上架、賣多少錢',2],
+   ['結合各店銷售資料，推出自有品牌的鮮奶與零食',2]]},
+ dctype:{type:'classify',cols:3,
+  bins:['製造商物流中心','批發商物流中心','貨運業者物流中心','零售商物流中心','區域物流中心','邊境物流中心'],
+  items:[
+   ['食品工廠為了讓自家產品更快鋪到各通路，自己蓋倉庫、組車隊',0],
+   ['進口代理商同時掌握下單收款（商流）與倉儲配送（物流）',1],
+   ['擁有數百輛貨車的貨運公司，把倉儲也做起來，承接各品牌配送',2],
+   ['連鎖超市為了減少中間商、提高議價空間，自己成立配送中心',3],
+   ['把要拆箱揀取的小量訂單揀好，趁半夜路況順暢送到前端配送點',4],
+   ['貨品出口前暫放、再轉運到國外中繼站的倉庫',5]]},
+ pickup:{type:'classify',cols:3,
+  bins:['取貨付款','取貨不付款','付款不取貨'],
+  items:[
+   ['網購衣服選超商取貨，到門市拿貨時才付現',0],
+   ['向二手書賣家下單，到超商領書時再付錢',0],
+   ['網路上已經刷卡付清，到門市報手機末三碼領貨',1],
+   ['先用行動支付付款，下班順路到超商拿包裹',1],
+   ['拿網購繳費單到超商櫃台付款，商品宅配到家',2],
+   ['到超商幫家人繳網購訂單的款項，貨直接寄到家裡',2]]},
+ stages:{type:'order',
+  prompt:'連鎖店從「店數極少」擴張到「店數更多」，物流配置會怎麼演變？請依階段一到五排好。',
+  items:['由商品供應商配送商品至各店','特定商圈集中由物流中心配送，外圍地區由商品供應商配送','開始成立複數物流中心','各區域各設置一處物流中心','全球物流策略，依市場需要展開一至四階段的過程'],
+  labels:['階段一','階段二','階段三','階段四','階段五']},
+ golden:{type:'quiz',qs:[
+  {q:'小美手上有一間租金超便宜的店面，她決定「先租下來，再想要賣什麼」。這違反了哪一條？',
+   o:['為開店找合適的地點，而不是為地點去開店','店舖規模適正即可','同一商圈內，店與店之間有互斥力也有互吸力'],a:0,
+   w:'先有業態與目標客群，才去找適合它的地點；倒過來做，便宜的店面往往是因為不適合。'},
+  {q:'阿凱堅持一定要進駐全市最熱鬧的商圈，結果只租得到巷子裡、路人看不到的二樓。這違反了哪一條？',
+   o:['開店績效成敗取決於租金率而非租金','選擇一流立地條件，而非進入一流商圈','不同業態的店，其商圈立地評估條件亦不相同'],a:1,
+   w:'一流商圈裡的三流位置，不如普通商圈裡的一流位置：能見度、動線、門面才決定客人進不進得來。'},
+  {q:'A 店面月租 30 萬、月營業額 300 萬；B 店面月租 8 萬、月營業額 40 萬。老闆覺得 B 比較划算。他忽略了哪一條？',
+   o:['店舖規模適正即可','立地影響商店經營成敗關鍵','開店績效成敗取決於租金率而非租金'],a:2,
+   w:'租金率＝租金 ÷ 營業額：A 是 10%，B 是 20%。B 租金便宜，但吃掉的營收比例反而是 A 的兩倍。'},
+  {q:'一家連鎖藥妝把「便利商店的選址標準」原封不動拿來找新店址。這違反了哪一條？',
+   o:['不同業態的店，其商圈立地評估條件亦不相同','選擇一流立地條件，而非進入一流商圈','為開店找合適的地點，而不是為地點去開店'],a:0,
+   w:'便利商店看的是步行幾分鐘內的生活需求；藥妝店看的是客層、逛街人潮與停留時間，評估條件不一樣。'},
+  {q:'新開的早午餐店坪數是同區對手的三倍，平日座位空了七成，租金壓得喘不過氣。這違反了哪一條？',
+   o:['尋找合適的商圈比尋找好的商圈重要','店舖規模適正即可','立地影響商店經營成敗關鍵'],a:1,
+   w:'店不是越大越好，坪數要配合商圈的來客量與營業額，太大只會墊高租金與人事成本。'},
+  {q:'兩家一樣的手搖飲開在隔壁互搶客人；但手搖飲旁邊開了一家炸雞店，兩家生意都變好。這說明了哪一條？',
+   o:['同一商圈內，店與店之間有互斥力也有互吸力','開店績效成敗取決於租金率而非租金','為開店找合適的地點，而不是為地點去開店'],a:0,
+   w:'同質性高的店互相排擠（互斥），互補的店彼此帶客（互吸）。'}]},
+ commute:{type:'quiz',qs:[
+  {q:'一家「早餐店」要開在圖中街道的哪個位置比較有利？',o:['上班動線那一側','下班動線那一側','兩側都一樣'],a:0,w:'早上通勤族在上班途中順手買早餐，店要在上班方向的那一側，客人不必過馬路。'},
+  {q:'一家「生鮮超市」呢？',o:['上班動線那一側','下班動線那一側','兩側都一樣'],a:1,w:'買菜、買晚餐多半在下班回家的路上，店開在下班動線側最順路。'},
+  {q:'一家 24 小時「便利商店」最理想的位置是？',o:['只有上班動線經過的地方','只有下班動線經過的地方','同時具備上班動線與下班動線的地方'],a:2,w:'便利商店早上賣早餐、晚上賣晚餐和日用品，上下班兩股人流都能吃到，就是「具備上班動線與下班動線條件」。'}]},
+ regab:{type:'quiz',qs:[
+  {q:'先別算！看表格猜猜看：哪一個立地的預期銷售額比較高？',o:['立地 A：家庭特性好、看得到店、有專業服務人員','立地 B：家庭戶數比較多'],a:1,
+   w:'立地 A＝4,000,000 元；立地 B＝4,080,000 元。B 只多 3,000 戶，但每戶權數 300，光戶數就多出 90 萬，足以抵掉其他條件的差距。'}]},
+ huff:{type:'quiz',qs:[
+  {q:'A 社區居民到新的 Q 超市購物的機率大約是？',o:['4.4%','9.1%','27.3%','50%'],a:0,
+   w:'R：8,000 ÷ 10³＝8　Q：10,000 ÷ 30³＝0.370<br>P<sub>AQ</sub>＝0.370 ÷（8＋0.370）≈ <b>0.044</b>'},
+  {q:'B 社區居民到 Q 超市購物的機率大約是？',o:['33.3%','44.4%','66.7%','90.9%'],a:3,
+   w:'R：8,000 ÷ 30³＝0.296　Q：10,000 ÷ 15³＝2.963<br>P<sub>BQ</sub>＝2.963 ÷（0.296＋2.963）≈ <b>0.909</b>'},
+  {q:'Q 超市的預期營業額大約是多少？',o:['約 390 萬元','約 500 萬元','約 640 萬元','約 1,000 萬元'],a:0,
+   w:'0.044 × 6,000,000 ＋ 0.909 × 4,000,000 ≈ 265,000 ＋ 3,636,000 ≈ <b>3,90x,xxx 元（約 390 萬）</b>'}]},
+ opening:{type:'vote',q:'如果要在學校附近開一家手搖飲，你會選哪裡？',
+  o:['學校正門對面','學生宿舍旁的巷口','往市區的主要幹道上','夜市入口']},
+ facade:{type:'vote',q:'同樣的坪數，你會選哪一種門面？',
+  o:['A 門面：方正','B 門面：面寬窄、縱深長','C 門面：面寬大、縱深淺']},
+ corner:{type:'vote',q:'十字路口有三個空店位，你會把店開在哪一個？',
+  o:['A 店（左上 Far Corner）','B 店（左下 Near Corner）','C 店（右下 Far Corner）']}
+};
+CFG.huff.qs[2].w='0.0442 × 6,000,000 ＋ 0.9091 × 4,000,000 ≈ 265,487 ＋ 3,636,364 ＝ <b>3,901,851 元（約 390 萬）</b>';
+
+/* ---------------- 分類 ---------------- */
+function classify(el,c){
+  el.innerHTML='';
+  const pool=h('div','pool');const bins=h('div','bins');bins.style.gridTemplateColumns=`repeat(${c.cols||c.bins.length},1fr)`;
+  const bar=h('div','ia-bar');
+  const tip=h('span','ia-tip','點一張卡片，再點它所屬的類別（也可以直接拖曳）；全部放好才會出現「顯示答案」。');
+  const bShow=h('button','btn solid','顯示答案');bShow.hidden=true;
+  const bReset=h('button','btn ghost','重新來過');const score=h('span','ia-score');
+  bar.append(tip,bShow,bReset,score);
+  let sel=null,done=false;
+  const binEls=c.bins.map((b,i)=>{const d=h('div','bin');d.innerHTML=`<h4>${b}</h4><div class="in"></div>`;d.dataset.i=i;bins.appendChild(d);return d});
+  const chips=shuffle(c.items.map((it,i)=>({t:it[0],a:it[1],i}))).map(it=>{
+    const ch=h('div','chip',`<span class="tx">${it.t}</span><span class="mk"></span>`);ch.dataset.a=it.a;ch.draggable=true;
+    ch.onclick=e=>{e.stopPropagation();if(done)return;
+      if(ch.parentElement!==pool){pool.appendChild(ch);ch.classList.remove('sel');sel=null;upd();return}
+      if(sel===ch){ch.classList.remove('sel');sel=null}else{sel&&sel.classList.remove('sel');sel=ch;ch.classList.add('sel')}
+      binEls.forEach(b=>b.classList.toggle('tgt',!!sel))};
+    ch.ondragstart=e=>{if(done)return e.preventDefault();sel=ch;e.dataTransfer.setData('text','x')};
+    pool.appendChild(ch);return ch});
+  binEls.forEach(b=>{
+    b.onclick=()=>{if(!sel||done)return;$('.in',b).appendChild(sel);sel.classList.remove('sel');sel=null;binEls.forEach(x=>x.classList.remove('tgt'));upd()};
+    b.ondragover=e=>{e.preventDefault();b.classList.add('tgt')};b.ondragleave=()=>b.classList.remove('tgt');
+    b.ondrop=e=>{e.preventDefault();b.classList.remove('tgt');if(sel&&!done){$('.in',b).appendChild(sel);sel.classList.remove('sel');sel=null;upd()}}});
+  function upd(){bShow.hidden=pool.children.length>0||done}
+  bShow.onclick=()=>{done=true;bShow.hidden=true;let ok=0;
+    chips.forEach(ch=>{const b=+ch.closest('.bin').dataset.i,a=+ch.dataset.a;const good=b===a;ok+=good;
+      ch.classList.add(good?'ok':'no');$('.mk',ch).innerHTML=good?' ✓':` ✗<span class="fix">→ ${c.bins[a]}</span>`});
+    score.textContent=`答對 ${ok} / ${chips.length}`;tip.textContent=ok===chips.length?'全部答對，乾杯！🥂':'紅框的卡片，箭頭後面是正確類別。'};
+  bReset.onclick=()=>classify(el,c);
+  el.append(pool,bins,bar);
+}
+
+/* ---------------- 排序 ---------------- */
+function order(el,c){
+  el.innerHTML='';
+  const pool=h('div','pool');const slots=h('div','slots');const bar=h('div','ia-bar');
+  const tip=h('span','ia-tip','依序點選卡片放進空格；點空格裡的卡片可退回。五格都放好才會出現「顯示答案」。');
+  const bShow=h('button','btn solid','顯示答案');bShow.hidden=true;
+  const bFix=h('button','btn','排成正確順序');bFix.hidden=true;
+  const bReset=h('button','btn ghost','重新來過');const score=h('span','ia-score');
+  bar.append(tip,bShow,bFix,bReset,score);
+  let done=false;
+  const slotEls=c.items.map((_,i)=>{const s=h('div','slot',`<span class="bub sm">${i+1}</span><span class="small" style="min-width:80px">${c.labels?c.labels[i]:''}</span>`);slots.appendChild(s);return s});
+  const chips=shuffle(c.items.map((t,i)=>({t,i}))).map(it=>{const ch=h('div','chip',`<span class="tx">${it.t}</span><span class="mk"></span>`);ch.dataset.i=it.i;
+    ch.onclick=()=>{if(done)return;if(ch.parentElement===pool){const s=slotEls.find(s=>!$('.chip',s));if(s)s.appendChild(ch)}else pool.appendChild(ch);bShow.hidden=pool.children.length>0};
+    pool.appendChild(ch);return ch});
+  bShow.onclick=()=>{done=true;bShow.hidden=true;let ok=0;
+    slotEls.forEach((s,i)=>{const ch=$('.chip',s);const g=+ch.dataset.i===i;ok+=g;ch.classList.add(g?'ok':'no');$('.mk',ch).textContent=g?' ✓':' ✗'});
+    score.textContent=`答對 ${ok} / ${slotEls.length}`;if(ok<slotEls.length)bFix.hidden=false};
+  bFix.onclick=()=>{slotEls.forEach((s,i)=>{const ch=chips.find(c=>+c.dataset.i===i);s.appendChild(ch);ch.className='chip ok';$('.mk',ch).textContent=' ✓'});bFix.hidden=true};
+  bReset.onclick=()=>order(el,c);
+  el.append(pool,slots,bar);
+}
+
+/* ---------------- 測驗（先選、再公佈） ---------------- */
+function quiz(el,c){
+  el.innerHTML='';
+  let qi=0;const ans=c.qs.map(()=>({sel:-1,shown:false}));
+  const top=h('div','row mid');const qno=h('span','qno');const dots=h('div','dots');top.append(qno,dots);top.style.justifyContent='space-between';
+  const qt=h('div','ia-q');const opts=h('div','opts');const rv=h('div','reveal');rv.hidden=true;
+  const bar=h('div','ia-bar');
+  const tip=h('span','ia-tip','先選答案（數字鍵 1–'+Math.max(...c.qs.map(q=>q.o.length))+'），選好才會出現「公佈正解」（Enter）。');
+  const bShow=h('button','btn solid','公佈正解');const bPrev=h('button','btn ghost','‹ 上一題');const bNext=h('button','btn','下一題 ›');const score=h('span','ia-score');
+  bar.append(tip,bPrev,bShow,bNext,score);
+  c.qs.forEach(()=>dots.appendChild(h('i')));
+  function draw(){const q=c.qs[qi],a=ans[qi];
+    qno.textContent=c.qs.length>1?`Q${qi+1} / ${c.qs.length}`:'';
+    $$('i',dots).forEach((d,i)=>d.className=i===qi?'cur':ans[i].shown?'done':'');dots.style.display=c.qs.length>1?'':'none';
+    qt.innerHTML=q.q;opts.innerHTML='';
+    q.o.forEach((o,i)=>{const b=h('button','opt',`<span class="k">${i+1}</span><span>${o}</span>`);
+      if(a.sel===i)b.classList.add('sel');
+      if(a.shown){if(i===q.a)b.classList.add('ok');else if(i===a.sel)b.classList.add('no')}
+      b.onclick=()=>pick(i);opts.appendChild(b)});
+    rv.hidden=!a.shown;rv.innerHTML=(a.sel===q.a?'<b class="hl">答對了！</b> ':'<b class="rz">正解是 '+(q.a+1)+'。</b> ')+q.w;
+    bShow.hidden=a.sel<0||a.shown;bPrev.hidden=qi===0;bNext.hidden=qi===c.qs.length-1;
+    tip.hidden=a.sel>=0;
+    const n=ans.filter(x=>x.shown).length;score.textContent=n?`答對 ${ans.filter((x,i)=>x.shown&&x.sel===c.qs[i].a).length} / ${n}`:'';
+    el.dispatchEvent(new CustomEvent('quiz',{detail:{qi,ans}}))}
+  function pick(i){if(ans[qi].shown)return;ans[qi].sel=i;draw()}
+  bShow.onclick=()=>{if(ans[qi].sel<0)return;ans[qi].shown=true;draw()};
+  bPrev.onclick=()=>{qi=Math.max(0,qi-1);draw()};bNext.onclick=()=>{qi=Math.min(c.qs.length-1,qi+1);draw()};
+  el.append(top,qt,opts,rv,bar);draw();
+  const s=slideOf(el);
+  s.onkey=e=>{const k=e.key;
+    if(/^[1-9]$/.test(k)&&+k<=c.qs[qi].o.length){pick(+k-1);return true}
+    if(k==='Enter'&&ans[qi].sel>=0&&!ans[qi].shown){bShow.click();return true}
+    if((k==='ArrowRight'||k===' ')&&ans[qi].shown&&qi<c.qs.length-1){bNext.click();return true}
+    return false};
+}
+
+/* ---------------- 投票 ---------------- */
+function vote(el,c,id){
+  el.innerHTML='';
+  const st=store.get('vote-'+id,c.o.map(()=>0));let hist=[];
+  const q=h('div','ia-q',c.q);const box=h('div','vote');const bar=h('div','ia-bar');
+  const tip=h('span','ia-tip',`點選項或按 1–${c.o.length} 投票；U 收回、R 歸零`);
+  const bU=h('button','btn ghost','收回一票');const bR=h('button','btn ghost','歸零');const tot=h('span','ia-score');
+  bar.append(tip,bU,bR,tot);
+  const rows=c.o.map((o,i)=>{const r=h('div','vrow',`<span class="bub sm">${i+1}</span><div class="vtrack"><div class="vfill"></div><div class="lab">${o}</div></div><div class="vnum">0</div>`);
+    r.onclick=()=>add(i);box.appendChild(r);return r});
+  function add(i){st[i]++;hist.push(i);upd()}
+  function upd(){const T=st.reduce((a,b)=>a+b,0),M=Math.max(1,...st);
+    rows.forEach((r,i)=>{$('.vfill',r).style.width=(st[i]/M*100)+'%';$('.vnum',r).innerHTML=`${st[i]}<small>${T?Math.round(st[i]/T*100):0}%</small>`});
+    tot.textContent=`共 ${T} 票`;store.set('vote-'+id,st)}
+  bU.onclick=()=>{const i=hist.pop();if(i!=null&&st[i]>0){st[i]--;upd()}};
+  bR.onclick=()=>{st.fill(0);hist=[];upd()};
+  el.append(q,box,bar);upd();
+  slideOf(el).onkey=e=>{const k=e.key;if(/^[1-9]$/.test(k)&&+k<=c.o.length){add(+k-1);return true}
+    if(k==='u'||k==='U'){bU.click();return true}if(k==='r'||k==='R'){bR.click();return true}return false};
+}
+
+/* ---------------- 計算器：來客數 ---------------- */
+function funnel(el){
+  const S={pass:2000,enter:8,close:60,price:120};
+  const base={...S};
+  el.innerHTML=`
+  <div class="calc">
+   <div class="sl"><span>通行客數（人／日）</span><input type="range" min="200" max="6000" step="100" data-k="pass"><b data-o="pass"></b></div>
+   <div class="sl"><span>入店率</span><input type="range" min="1" max="30" step="1" data-k="enter"><b data-o="enter"></b></div>
+   <div class="sl"><span>成交率</span><input type="range" min="10" max="100" step="5" data-k="close"><b data-o="close"></b></div>
+   <div class="sl"><span>客單價（元）</span><input type="range" min="40" max="400" step="10" data-k="price"><b data-o="price"></b></div>
+  </div>
+  <div class="row mt mid">
+   <div class="out f1"><div class="lab">交易客數＝通行客數 × 入店率 × 成交率</div><div class="big gt" data-o="tx"></div></div>
+   <div class="out f1"><div class="lab">日營業額＝交易客數 × 客單價</div><div class="big gt" data-o="rev"></div><div class="small" data-o="delta"></div></div>
+  </div>
+  <div class="ia-bar"><span class="ia-tip">哪一個槓桿讓營業額長得最多？</span>
+   <button class="btn" data-lv="enter">招牌更明顯（入店率＋2%）</button>
+   <button class="btn" data-lv="close">店員推薦（成交率＋10%）</button>
+   <button class="btn" data-lv="pass">換到人潮街角（通行＋30%）</button>
+   <button class="btn ghost" data-lv="reset">回到預設</button></div>`;
+  const inp=$$('input',el);
+  function upd(){inp.forEach(i=>i.value=S[i.dataset.k]);
+    $('[data-o=pass]',el).textContent=fmt(S.pass);$('[data-o=enter]',el).textContent=S.enter+'%';$('[data-o=close]',el).textContent=S.close+'%';$('[data-o=price]',el).textContent='$'+S.price;
+    const tx=S.pass*S.enter/100*S.close/100,rev=tx*S.price,b=base.pass*base.enter/100*base.close/100*base.price;
+    $('[data-o=tx]',el).textContent=fmt(tx)+' 人';$('[data-o=rev]',el).textContent='$'+fmt(rev);
+    const d=rev-b;$('[data-o=delta]',el).textContent=d?`比預設 ${d>0?'多':'少'} $${fmt(Math.abs(d))}（${d>0?'+':''}${Math.round(d/b*100)}%）`:'預設：通行 2,000 人、入店率 8%、成交率 60%、客單價 120 元'}
+  inp.forEach(i=>i.oninput=()=>{S[i.dataset.k]=+i.value;upd()});
+  $$('[data-lv]',el).forEach(b=>b.onclick=()=>{const k=b.dataset.lv;
+    if(k==='reset')Object.assign(S,base);else if(k==='enter')S.enter=Math.min(30,S.enter+2);else if(k==='close')S.close=Math.min(100,S.close+10);else S.pass=Math.min(6000,Math.round(S.pass*1.3/100)*100);upd()});
+  upd();
+}
+
+/* ---------------- IRS 飽和度 ---------------- */
+function irs(el){
+  const D=[['大學城',6000,900,18],['新興住宅區',4500,1000,9],['老街觀光區',8000,750,24]];
+  let sel=-1,shown=false;
+  el.innerHTML=`<div class="ia-q" style="font-size:34px">三個候選商圈，要開一家手搖飲。<span class="hl">哪一個商圈最不飽和</span>（最有開店空間）？先猜，再公佈。</div>
+  <table class="tb cmp" style="font-size:28px"><tr><th>候選商圈</th><th>C 戶數</th><th>E 每戶每月飲料消費</th><th>SP 競合店數</th><th>IRS＝C×E／SP</th><th>你的選擇</th></tr>
+  ${D.map((d,i)=>`<tr><td>${d[0]}</td><td>${fmt(d[1])}</td><td>${fmt(d[2])} 元</td><td>${d[3]} 家</td><td class="irsv" style="color:var(--gold);font-family:var(--display);font-size:30px">？</td><td><button class="opt" data-i="${i}" style="padding:8px 16px;font-size:24px"><span class="k">${i+1}</span>選這個</button></td></tr>`).join('')}</table>
+  <div class="reveal" hidden></div>
+  <div class="ia-bar"><span class="ia-tip">數字鍵 1–3 選擇，Enter 公佈。</span><button class="btn solid" hidden>公佈正解</button><button class="btn ghost">重新來過</button></div>`;
+  const bs=$$('.opt',el),[bShow,bReset]=$$('.ia-bar .btn',el),rv=$('.reveal',el),cells=$$('.irsv',el);
+  function pick(i){if(shown)return;sel=i;bs.forEach((b,j)=>b.classList.toggle('sel',j===i));bShow.hidden=false}
+  bs.forEach((b,i)=>b.onclick=()=>pick(i));
+  bShow.onclick=()=>{shown=true;bShow.hidden=true;const v=D.map(d=>d[1]*d[2]/d[3]);const best=v.indexOf(Math.max(...v));
+    cells.forEach((c,i)=>c.textContent=fmt(v[i]));bs.forEach((b,i)=>{b.classList.remove('sel');if(i===best)b.classList.add('ok');else if(i===sel)b.classList.add('no')});
+    rv.hidden=false;rv.innerHTML=(sel===best?'<b class="hl">猜對了！</b>':'<b class="rz">答案是新興住宅區。</b>')+' IRS 代表「每一家競合店平均分到的消費力」，數字越大，商圈越不飽和。大學城與老街雖然人多，但店也多；新興住宅區戶數最少，卻因為店少，每家店分到的最多。'};
+  bReset.onclick=()=>irs(el);
+  slideOf(el).onkey=e=>{if(/^[1-3]$/.test(e.key)){pick(+e.key-1);return true}if(e.key==='Enter'&&sel>=0&&!shown){bShow.click();return true}return false};
+}
+
+/* ---------------- Reilly 計算器 ---------------- */
+function reilly(el){
+  const S={pa:160000,pb:40000,d:30};
+  el.innerHTML=`<div class="calc">
+   <div class="sl"><span>A 城市人口</span><input type="range" min="10000" max="500000" step="10000" data-k="pa"><b data-o="pa"></b></div>
+   <div class="sl"><span>B 城市人口</span><input type="range" min="10000" max="500000" step="10000" data-k="pb"><b data-o="pb"></b></div>
+   <div class="sl"><span>兩地距離（公里）</span><input type="range" min="5" max="80" step="1" data-k="d"><b data-o="d"></b></div></div>
+  <svg viewBox="0 0 1400 230" style="width:100%;height:230px;margin-top:10px" class="noswipe">
+   <defs><radialGradient id="rgA"><stop offset="0" stop-color="#FFF6D2"/><stop offset=".5" stop-color="#FFD700"/><stop offset="1" stop-color="#B8862B" stop-opacity=".2"/></radialGradient>
+   <radialGradient id="rgB"><stop offset="0" stop-color="#FFE9E0"/><stop offset=".5" stop-color="#F4B9A6"/><stop offset="1" stop-color="#F4B9A6" stop-opacity=".15"/></radialGradient></defs>
+   <line x1="120" y1="115" x2="1280" y2="115" stroke="#D4AF37" stroke-width="2" stroke-dasharray="6 8"/>
+   <rect data-o="zoneA" x="120" y="90" height="50" rx="25" fill="rgba(255,215,0,.18)"/>
+   <rect data-o="zoneB" y="90" height="50" rx="25" fill="rgba(244,185,166,.18)"/>
+   <circle data-o="ca" cx="120" cy="115" fill="url(#rgA)" class="glow"/><circle data-o="cb" cx="1280" cy="115" fill="url(#rgB)"/>
+   <g data-o="mark"><line y1="40" y2="190" stroke="#FFF6D2" stroke-width="3"/><text data-o="mtext" y="30" text-anchor="middle" font-size="24" fill="#FFD700">商圈分界點</text></g>
+   <text x="120" y="215" text-anchor="middle" font-size="24">A 城市</text><text x="1280" y="215" text-anchor="middle" font-size="24">B 城市</text></svg>
+  <div class="row mid"><div class="out f1"><div class="lab">A 城市的商圈範圍 D<sub>a</sub></div><div class="big gt" data-o="da"></div></div>
+   <div class="out f1"><div class="lab">B 城市的商圈範圍 D<sub>b</sub></div><div class="big" style="color:var(--rose)" data-o="db"></div></div></div>
+  <div class="ia-bar"><span class="ia-tip" style="flex:none">試試：</span><div class="pres">
+   <button class="btn" data-p="160000,40000,30">16 萬 vs 4 萬，相距 30 公里</button>
+   <button class="btn" data-p="250000,10000,36">25 萬 vs 1 萬，相距 36 公里</button>
+   <button class="btn" data-p="100000,100000,40">人口一樣多</button>
+   <button class="btn" data-p="300000,30000,60">30 萬 vs 3 萬，相距 60 公里</button>
+   <button class="btn" data-p="50000,200000,24">5 萬 vs 20 萬，相距 24 公里</button></div></div>`;
+  const inp=$$('input',el);
+  function upd(){inp.forEach(i=>i.value=S[i.dataset.k]);
+    $('[data-o=pa]',el).textContent=fmt(S.pa);$('[data-o=pb]',el).textContent=fmt(S.pb);$('[data-o=d]',el).textContent=S.d+' km';
+    const da=S.d/(1+Math.sqrt(S.pb/S.pa)),db=S.d-da;
+    $('[data-o=da]',el).textContent=da.toFixed(1)+' km';$('[data-o=db]',el).textContent=db.toFixed(1)+' km';
+    const x=120+1160*da/S.d;
+    $('[data-o=zoneA]',el).setAttribute('width',x-120);const zb=$('[data-o=zoneB]',el);zb.setAttribute('x',x);zb.setAttribute('width',1280-x);
+    $('[data-o=mark]',el).setAttribute('transform',`translate(${x},0)`);
+    const r=p=>14+Math.sqrt(p/500000)*62;$('[data-o=ca]',el).setAttribute('r',r(S.pa));$('[data-o=cb]',el).setAttribute('r',r(S.pb))}
+  inp.forEach(i=>i.oninput=()=>{S[i.dataset.k]=+i.value;upd()});
+  $$('[data-p]',el).forEach(b=>b.onclick=()=>{const[a,bb,d]=b.dataset.p.split(',').map(Number);Object.assign(S,{pa:a,pb:bb,d});upd()});
+  upd();
+}
+
+/* ---------------- 迴歸：立地 C 試算 ---------------- */
+function regc(el){
+  const S={hh:12000,kid:30,young:40,see:1,staff:0};
+  el.innerHTML=`<div class="calc">
+   <div class="sl"><span>15 分鐘內家庭戶數</span><input type="range" min="2000" max="20000" step="500" data-k="hh"><b data-o="hh"></b></div>
+   <div class="sl"><span>有未滿 15 歲子女</span><input type="range" min="0" max="100" step="5" data-k="kid"><b data-o="kid"></b></div>
+   <div class="sl"><span>有抱負青年的家庭</span><input type="range" min="0" max="100" step="5" data-k="young"><b data-o="young"></b></div></div>
+  <div class="row mt mid" style="gap:16px"><button class="chip" data-t="see">從街道上能清楚看到商店（＋100,000）</button><button class="chip" data-t="staff">店裡有專業服務人員（＋200,000）</button></div>
+  <div class="out mt"><div class="lab">立地 C 的預期銷售額</div><div class="big gt" data-o="y"></div><div class="small mt" data-o="cmp"></div></div>`;
+  const inp=$$('input',el);
+  function upd(){inp.forEach(i=>i.value=S[i.dataset.k]);
+    $('[data-o=hh]',el).textContent=fmt(S.hh);$('[data-o=kid]',el).textContent=S.kid+'%';$('[data-o=young]',el).textContent=S.young+'%';
+    $$('[data-t]',el).forEach(c=>c.classList.toggle('sel',!!S[c.dataset.t]));
+    const y=300*S.hh+500000*S.kid/100+800000*S.young/100+100000*S.see+200000*S.staff;
+    $('[data-o=y]',el).textContent='$'+fmt(y);
+    $('[data-o=cmp]',el).innerHTML=`對照：立地 A＝4,000,000　立地 B＝4,080,000　→ 立地 C ${y>4080000?'<b class="hl">勝出</b>':y===4080000?'與 B 打平':'<b class="rz">還輸給 B</b>'}`}
+  inp.forEach(i=>i.oninput=()=>{S[i.dataset.k]=+i.value;upd()});
+  $$('[data-t]',el).forEach(c=>c.onclick=()=>{S[c.dataset.t]=S[c.dataset.t]?0:1;upd()});
+  upd();
+}
+
+/* ---------------- 損益平衡點 ---------------- */
+function bep(el){
+  const S={fix:180000,vc:35,ve:15,price:60};
+  el.innerHTML=`<div class="calc">
+   <div class="sl"><span>每月固定費用</span><input type="range" min="60000" max="400000" step="10000" data-k="fix"><b data-o="fix"></b></div>
+   <div class="sl"><span>變動成本率</span><input type="range" min="10" max="60" step="1" data-k="vc"><b data-o="vc"></b></div>
+   <div class="sl"><span>變動費用率</span><input type="range" min="0" max="30" step="1" data-k="ve"><b data-o="ve"></b></div>
+   <div class="sl"><span>平均客單價</span><input type="range" min="40" max="150" step="5" data-k="price"><b data-o="price"></b></div></div>
+  <div class="row mt mid"><div class="out f1"><div class="lab">損益平衡點（月營業額）</div><div class="big gt" data-o="b"></div></div>
+   <div class="out f1"><div class="lab">換算每天要賣（以 30 天計）</div><div class="big" style="color:var(--rose)" data-o="cups"></div><div class="small" data-o="day"></div></div></div>
+  <div class="ia-tip mt" style="font-size:24px">固定費用＝租金＋人事＋水電＋折舊…；變動成本率＝原料成本 ÷ 營業額；變動費用率＝包材、外送平台抽成 ÷ 營業額</div>`;
+  const inp=$$('input',el);
+  function upd(){inp.forEach(i=>i.value=S[i.dataset.k]);
+    $('[data-o=fix]',el).textContent='$'+fmt(S.fix);$('[data-o=vc]',el).textContent=S.vc+'%';$('[data-o=ve]',el).textContent=S.ve+'%';$('[data-o=price]',el).textContent='$'+S.price;
+    const m=1-S.vc/100-S.ve/100;
+    if(m<=0){$('[data-o=b]',el).textContent='永遠不會賺錢';$('[data-o=cups]',el).textContent='—';$('[data-o=day]',el).textContent='每賣一杯都在賠，先降成本！';return}
+    const b=S.fix/m;$('[data-o=b]',el).textContent='$'+fmt(b);$('[data-o=cups]',el).textContent=fmt(Math.ceil(b/30/S.price))+' 杯';$('[data-o=day]',el).textContent=`每天營業額 $${fmt(b/30)}`}
+  inp.forEach(i=>i.oninput=()=>{S[i.dataset.k]=+i.value;upd()});upd();
+}
+
+/* ---------------- 流量調查計數器 ---------------- */
+function counter(el){
+  const P=[['A','家庭主婦'],['B','職業婦女'],['C','上班族男性'],['D','工廠員工'],['E','學生（高中以上）'],['F','學生（高中以下）']];
+  const V=[['M','機車'],['S','小汽車'],['L','大汽車']];
+  const slots=[];for(let t=9;t<22;t++)slots.push(`${String(t).padStart(2,'0')}:00–${String(t+1).padStart(2,'0')}:00`);
+  let st=store.get('counter',{}),mode='p',slot=Math.min(Math.max(new Date().getHours()-9,0),12),hist=[];
+  el.innerHTML=`<div class="row mid" style="justify-content:space-between">
+    <div class="tabs"><button class="chip sel" data-m="p">行人流量</button><button class="chip" data-m="v">交通工具流量</button></div>
+    <div class="row mid" style="gap:10px"><span class="small">時間段</span><button class="btn ghost" data-s="-1">‹</button><span class="hl" data-o="slot" style="font-family:var(--display);font-size:24px;min-width:170px;text-align:center"></span><button class="btn ghost" data-s="1">›</button></div></div>
+   <div class="ctr mt" data-o="btns"></div>
+   <div class="row mt mid"><div class="out f1" style="padding:12px 20px"><div class="lab">本時段合計</div><div class="big gt" style="font-size:48px" data-o="sum"></div></div>
+    <div class="out f1" style="padding:12px 20px"><div class="lab">全天合計（各時段加總）</div><div class="big" style="font-size:48px;color:var(--rose)" data-o="all"></div></div></div>
+   <div class="ia-bar"><span class="ia-tip">點按或按數字鍵計數；U 收回上一筆。資料存在這台裝置，可帶到現場實測。</span><button class="btn ghost" data-a="u">收回</button><button class="btn ghost" data-a="r">本時段歸零</button><button class="btn ghost" data-a="all">全部清除</button></div>`;
+  const key=()=>mode+slot;
+  function draw(){const L=mode==='p'?P:V;const b=$('[data-o=btns]',el);b.style.gridTemplateColumns=`repeat(${L.length===6?3:3},1fr)`;
+    const cur=st[key()]||{};
+    b.innerHTML=L.map((x,i)=>`<button class="cbtn" data-c="${x[0]}"><div class="n">${cur[x[0]]||0}</div><div class="t">${mode==='p'?x[0]+'：':''}${x[1]}</div><div class="k">按 ${i+1}</div></button>`).join('');
+    $$('.cbtn',b).forEach(x=>x.onclick=()=>inc(x.dataset.c));
+    $('[data-o=slot]',el).textContent=slots[slot];
+    $('[data-o=sum]',el).textContent=Object.values(cur).reduce((a,c)=>a+c,0);
+    let all=0;Object.keys(st).forEach(k=>{if(k[0]===mode)all+=Object.values(st[k]).reduce((a,c)=>a+c,0)});$('[data-o=all]',el).textContent=all;
+    $$('[data-m]',el).forEach(c=>c.classList.toggle('sel',c.dataset.m===mode));store.set('counter',st)}
+  function inc(c){const k=key();st[k]=st[k]||{};st[k][c]=(st[k][c]||0)+1;hist.push([k,c]);draw()}
+  $$('[data-m]',el).forEach(c=>c.onclick=()=>{mode=c.dataset.m;draw()});
+  $$('[data-s]',el).forEach(c=>c.onclick=()=>{slot=(slot+ +c.dataset.s+13)%13;draw()});
+  $('[data-a=u]',el).onclick=()=>{const x=hist.pop();if(x&&st[x[0]]&&st[x[0]][x[1]]>0){st[x[0]][x[1]]--;draw()}};
+  $('[data-a=r]',el).onclick=()=>{delete st[key()];draw()};
+  $('[data-a=all]',el).onclick=()=>{if(confirm('清除所有時段的計數？')){st={};hist=[];draw()}};
+  slideOf(el).onkey=e=>{const L=mode==='p'?P:V;if(/^[1-9]$/.test(e.key)&&+e.key<=L.length){inc(L[+e.key-1][0]);return true}
+    if(e.key==='u'||e.key==='U'){$('[data-a=u]',el).click();return true}return false};
+  draw();
+}
+
+/* ---------------- 檢核表 ---------------- */
+function checklist(el){
+  const st=store.get('mission',[]);
+  $$('.chk',el).forEach((c,i)=>{c.insertAdjacentHTML('afterbegin','<span class="box">✓</span>');c.classList.toggle('done',!!st[i]);
+    c.onclick=()=>{st[i]=!st[i];c.classList.toggle('done',st[i]);store.set('mission',st);sum()}});
+  const s=$('[data-o=msum]',el);function sum(){if(s)s.textContent=`已完成 ${st.filter(Boolean).length} / ${$$('.chk',el).length}`}sum();
+}
+
+/* ---------------- 猜了再看（內嵌） ---------------- */
+function peek(el){const b=$('.peek-btn',el),t=$$('.peek-hide',el);b.onclick=()=>{t.forEach(x=>x.style.visibility='visible');b.hidden=true};t.forEach(x=>x.style.visibility='hidden')}
+
+/* ---------------- 初始化 ---------------- */
+const CUSTOM={funnel,irs,reilly,regc,bep,counter,checklist,peek};
+$$('[data-ia]').forEach(el=>{const id=el.dataset.ia;
+  if(CUSTOM[id])return CUSTOM[id](el);
+  const c=CFG[id];if(!c)return console.warn('no cfg',id);
+  ({classify,order,quiz,vote})[c.type](el,c,id)});
+
+const ra=$('[data-ia=regab]');
+if(ra)ra.addEventListener('quiz',e=>{const c=$('[data-o=regcalc]',slideOf(ra));if(c)c.style.visibility=e.detail.ans[0].shown?'visible':'hidden'});
+/* 動線測驗：題目切換時標出 SVG 對應位置 */
+const cm=$('[data-ia=commute]');
+if(cm)cm.addEventListener('quiz',e=>{const s=slideOf(cm);$$('[data-q]',s).forEach(g=>g.style.opacity=(+g.dataset.q===e.detail.qi&&e.detail.ans[e.detail.qi].shown)?1:0)});
+})();
+
+/* ===== 表單小工具：商店型態格、勾選框、單雙號切換 ===== */
+(function(){
+const S=['百貨公司','超級市場','便利商店','百貨行','雜貨店','西點麵包','西餐廳','中餐廳','速食店','咖啡冷飲','服飾','鐘錶眼鏡','鞋店','運動用品','銀樓','書局文具','藥局','花店','照相館','電器行','理容院','通信行','KTV','電影院','電玩店','傢俱行','汽機車行','加油站','電信局','銀行','大專院校','醫院診所','菜市場夜市','其他'];
+document.querySelectorAll('[data-o=stores]').forEach(tb=>{let h='';
+  for(let r=0;r<7;r++){h+='<tr>';for(let c=0;c<5;c++){const s=S[r*5+c];h+=s?`<td class="k" style="font-weight:400;color:var(--champ)">${s}</td><td><input class="blank" inputmode="numeric"> 家</td>`:'<td></td><td></td>'}h+='</tr>'}
+  tb.innerHTML=h});
+document.addEventListener('click',e=>{const c=e.target.closest('.ck');if(c){c.classList.toggle('on');
+  if(c.classList.contains('on'))[...c.parentElement.querySelectorAll('.ck')].forEach(x=>{if(x!==c)x.classList.remove('on')})}
+  const sd=e.target.closest('[data-side]');if(sd){sd.parentElement.querySelectorAll('[data-side]').forEach(x=>x.classList.toggle('sel',x===sd))}});
+})();
+</script>
+</body>
+</html>
